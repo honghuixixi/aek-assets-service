@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssArchiveMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssArchive">
+		<id column="id" property="id" />
+		<result column="tenant_id" property="tenantId" />
+		<result column="assets_id" property="assetsId" />
+		<result column="archive_name" property="archiveName" />
+		<result column="archive_num" property="archiveNum" />
+		<result column="limit_storage_time" property="limitStorageTime" />
+		<result column="secret_level" property="secretLevel" />
+		<result column="filing_user_name" property="filingUserName" />
+		<result column="filing_time" property="filingTime" />
+		<result column="check_user_name" property="checkUserName" />
+		<result column="check_time" property="checkTime" />
+		<result column="start_time" property="startTime" />
+		<result column="end_time" property="endTime" />
+		<result column="filing_department" property="filingDepartment" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, tenant_id AS tenantId, assets_id AS assetsId, archive_name AS archiveName,archive_num AS archiveNum,limit_storage_time AS limitStorageTime, secret_level AS secretLevel, filing_user_name AS filingUserName, filing_time AS filingTime, check_user_name AS checkUserName, check_time AS checkTime, start_time AS startTime, end_time AS endTime, filing_department AS filingDepartment, create_time AS createTime, update_time AS updateTime
+    </sql>
+    
+    <!-- 获取未建档设备 -->
+    <select id="getNewArchiveAssetsList" resultType="com.aek.ebey.assets.model.vo.AssetArchiveVo">
+		SELECT 
+			 i.id assetId,
+			 i.assets_name  assetsName, 
+			 i.assets_num  assetsNum,
+		     i.dept_id deptId,
+		     e.factory_num factoryNum 
+		FROM ass_assets_info i 
+		LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		LEFT JOIN ass_archive a ON i.id=a.assets_id
+		WHERE i.del_flag=0 
+		AND i.assets_status=1 
+		AND a.assets_id is null
+		<if test="user.tenantId != null">
+			and i.sys_id = #{user.tenantId}
+		</if>
+		<if test="query.keyword != null and query.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{query.keyword},'%') or i.assets_num LIKE CONCAT('%',#{query.keyword},'%'))
+		</if>
+		<if test="query.deptId != null">
+			and i.dept_id = #{query.deptId}
+		</if>
+		order by i.assets_num desc
+	</select>
+	
+	<select id="getArchivePage" resultType="com.aek.ebey.assets.model.vo.ArchivePageVo">
+		SELECT
+			a.id id,
+			a.archive_num archiveNum,
+			a.archive_name archiveName,
+			a.filing_time filingTime,
+			a.filing_user_name filingUserName,
+			i.assets_name assetsName,
+			e.assets_num assetsNum,	
+			e.factory_num factoryNum,		
+			CASE
+				WHEN a.secret_level = 1 THEN "公开级"
+				WHEN a.secret_level = 2 THEN "内部级"
+				WHEN a.secret_level = 3 THEN "秘密级"
+				WHEN a.secret_level = 4 THEN "机密级"
+				WHEN a.secret_level = 5 THEN "绝密级"
+			END AS secretLevelStr
+		FROM
+			ass_archive a
+		LEFT JOIN ass_assets_info i ON a.assets_id = i.id
+		LEFT JOIN ass_assets_info_ext e ON a.assets_id = e.assets_id
+		WHERE
+			1=1
+		AND a.tenant_id=#{user.tenantId}
+		<if test="q.secretLevel !=null">
+			AND a.secret_level=#{q.secretLevel}
+		</if>	
+		<if test="q.keyword !=null and q.keyword !=''">
+			AND (a.archive_name like CONCAT('%',#{q.keyword},'%') OR a.archive_num like CONCAT('%',#{q.keyword},'%') OR e.assets_num like CONCAT('%',#{q.keyword},'%') OR i.assets_name LIKE CONCAT('%' ,#{q.keyword}, '%'))	
+		</if>	
+		<if test="q.filingTimeStart != null and q.filingTimeStart !=''">
+			<![CDATA[
+				AND a.filing_time >= #{q.filingTimeStart}
+			]]>
+		</if>
+		<if test="q.filingTimeEnd != null and q.filingTimeEnd !=''">
+			<![CDATA[
+				AND a.filing_time <= #{q.filingTimeEnd}
+			]]>	
+		</if>
+		order by a.create_time desc
+	</select>
+	
+	<select id="getAssetBasicInfo" resultType="com.aek.ebey.assets.model.bo.ArchiveAssetBo">
+		SELECT
+			i.assets_name assetsName,
+			i.assets_num assetsNum,
+			i.assets_spec assetsSpec,
+			i.unit_id unitId,
+			i.assets_type_id assetsTypeId,
+			i.dept_id deptId,
+			i.manage_dept_id manageDeptId,
+			i.spl_name splName,
+			i.price price,
+			i.create_by createBy,
+			i.assets_class_id assetsClassId,
+			i.assets_img assetsImg,
+			i.create_time createTime,
+			i.three_level_code threeLevelCode,
+			i.status status,
+			i.assets_source assetsSource,
+			i.made_in madeIn,
+			i.risk_level riskLevel,
+			e.factory_name factoryName,
+			e.assets_brand assetsBrand,
+			e.prod_place prodPlace,
+			e.reg_name regName,
+			e.reg_no regNo,
+			e.factory_num factoryNum,
+			e.serial_num serialNum,
+			e.manage_level manageLevel,
+			e.measure_type measureType,
+			e.measure_flag measureFlag,
+			e.polling_flag pollingFlag,
+			e.start_use_date startUseDate,
+			e.purpose purpose,
+			e.warranty_date warrantyDate,
+			e.purchase_type_id purchaseTypeId,
+			e.purchase_date purchaseDate
+		FROM
+			ass_assets_info i
+		LEFT JOIN ass_assets_info_ext e ON i.id = e.assets_id
+		WHERE
+			i.del_flag = 0
+		AND i.id = #{assetId}
+		AND i.sys_id = #{user.tenantId}
+	</select>
+	
+	<select id="getArchiveTransferPage" resultType="com.aek.ebey.assets.model.vo.ArchiveTransferVo">
+		SELECT
+			DISTINCT
+			t.id,
+			t.transfer_num transferNum,
+			t.to_dept_name toDeptName,
+			t.applyer_name applyerName,
+			t.creat_time creatTime,
+			t.auditer_name auditerName,
+			t.audit_time auditTime
+		FROM
+			ass_assets_transfer t,ass_assets_transfer_detail d
+		WHERE
+			t.id = d.transfer_id
+		AND t.del_flag = 0
+		AND t.status=1
+		AND d.del_flag=0
+		AND d.operate=1
+		AND d.assets_id = #{q.assetId}
+		AND t.tenant_id = #{user.tenantId}
+		<if test="q.startDate != null and q.startDate !=''">
+			<![CDATA[
+				AND t.creat_time >= #{q.startDate}
+			]]>
+		</if>
+		<if test="q.endDate != null and q.endDate !=''">
+			<![CDATA[
+				AND t.creat_time <= #{q.endDate}
+			]]>	
+		</if>
+		<if test="q.keyword !=null and q.keyword !=''">
+			AND (t.transfer_num like CONCAT('%',#{q.keyword},'%') OR d.assets_name like CONCAT('%',#{q.keyword},'%') OR d.serial_num like CONCAT('%',#{q.keyword},'%'))	
+		</if>
+		order by t.transfer_num desc	
+	</select>
+	
+	
+	<select id="getTransferDetail" resultType="string">
+		SELECT dept_name FROM ass_assets_transfer_detail WHERE del_flag=0 AND assets_id=#{assetId} AND transfer_id=#{transferId}
+	</select>
+	
+	<select id="getArchiveDiscardPage" resultType="com.aek.ebey.assets.model.vo.ArchiveDiscardVo">
+		SELECT DISTINCT
+			ad.id,
+			ad.discard_no discardNo,
+			ad.type type,
+			ad.apply_name applyName,
+			ad.create_time creatTime,
+			ad.verify_name verifyName,
+			ad.verify_time verifyTime
+		FROM
+			ass_assets_discard ad,ass_assets_discard_detail dd
+		WHERE
+			ad.id = dd.discard_id
+		AND ad. STATUS = 2
+		AND ad.tenant_id = #{user.tenantId}
+		AND dd.type = 1
+		AND dd.assets_id = #{q.assetId}
+		order by ad.discard_no desc
+	</select>
+	
+	<select id="getDiscardDetail" resultType="string">
+		SELECT assets_dept_name FROM ass_assets_discard_detail WHERE assets_id=#{assetId} AND discard_id=#{discardId}
+	</select>
+	
+	<select id="preEditArchive" resultType="com.aek.ebey.assets.model.vo.PreEditArchiveVo">
+		SELECT
+			a.id id,
+			a.archive_num archiveNum,
+			a.archive_name archiveName,
+			a.filing_time filingTime,
+			a.filing_user_name filingUserName,
+			a.limit_storage_time limitStorageTime,
+			a.secret_level secretLevel,
+			a.check_user_name checkUserName,
+			a.check_time checkTime,
+			a.start_time startTime,
+			a.end_time endTime,
+			a.filing_department filingDepartment,
+			i.id assetId,
+			i.assets_name assetsName,
+			i.dept_id deptId,
+			e.assets_num assetsNum,
+			e.factory_num factoryNum
+		FROM
+			ass_archive a
+		LEFT JOIN ass_assets_info i ON a.assets_id = i.id
+		LEFT JOIN ass_assets_info_ext e ON a.assets_id = e.assets_id
+		WHERE
+			1 = 1
+		AND a.id = #{id}
+	</select>
+</mapper>

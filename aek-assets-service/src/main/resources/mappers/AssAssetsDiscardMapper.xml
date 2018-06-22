@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssAssetsDiscardMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssAssetsDiscard">
+		<id column="id" property="id" />
+		<result column="discard_id" property="discardId" />
+		<result column="assets_id" property="assetsId" />
+		<result column="assets_name" property="assetsName" />
+		<result column="assets_num" property="assetsNum" />
+		<result column="serial_num" property="serialNum" />		
+		<result column="factory_name" property="factoryName" />
+		<result column="spl_name" property="splName" />
+		<result column="assets_spec" property="assetsSpec" />
+		<result column="assets_dept_id" property="assetsDeptId" />
+		<result column="assets_dept_name" property="assetsDeptName" />
+		<result column="status" property="status" />
+		<result column="start_use_date" property="startUseDate" />
+		<result column="unit_name" property="unitName" />
+		<result column="type" property="type" />
+		<result column="assets_img" property="assetsImg" />
+		<result column="verify_status" property="verifyStatus" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, discard_id AS discardId, assets_id AS assetsId, assets_name AS assetsName,assets_img AS assetsImg, assets_num AS assetsNum, factory_name AS factoryName,spl_name AS splName,assets_spec AS assetsSpec, assets_dept_id AS assetsDeptId, assets_dept_name AS assetsDeptName, status,start_use_date AS startUseDate,unit_name AS unitName, type, verify_status AS verifyStatus
+    </sql>
+    
+    <select id="selectByAssDiscardId" parameterType="long" resultType="com.aek.ebey.assets.model.AssAssetsDiscard">
+    SELECT 
+	    id, 
+	    discard_id AS discardId, 
+	    assets_id AS assetsId, 
+	    assets_name AS assetsName, 
+	    assets_num AS assetsNum,
+	    serial_num AS serialNum,
+	    factory_name AS factoryName,
+	    spl_name AS splName,
+	    assets_spec AS assetsSpec, 
+	    assets_dept_id AS assetsDeptId, 
+	    assets_dept_name AS assetsDeptName, 
+	    status,
+	    start_use_date AS startUseDate,
+	    unit_name AS unitName, 
+	    type, 
+	    verify_status AS verifyStatus
+	FROM 
+	    ass_assets_discard_detail
+	WHERE
+		discard_id =#{id}
+    
+    </select>
+    
+    <select id="selectByAssId" resultType="com.aek.ebey.assets.model.request.AssetsDisResponse">
+    
+      	SELECT 
+			 i.assets_id  AS assetsId,
+			 i.assets_spec  assetsSpec,
+			 i.assets_num  assetsNum,
+			 i.serial_num  serialNum,
+			 i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+		     i.spl_name  splName,
+			 i.factory_name  factoryName,
+	 		 i.unit_name  unitName,
+			 i.assets_dept_name deptName,
+		     i.status status1
+		FROM 
+		     ass_assets_discard_detail i where discard_id=#{id}
+    
+    </select>
+</mapper>

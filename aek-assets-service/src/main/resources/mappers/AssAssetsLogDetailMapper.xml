@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssAssetsLogDetailMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssAssetsLogDetail">
+		<id column="id" property="id" />
+		<result column="assets_log_id" property="assetsLogId" />
+		<result column="type" property="type" />
+		<result column="table_name" property="tableName" />
+		<result column="field" property="field" />
+		<result column="field_name" property="fieldName" />
+		<result column="property_name" property="propertyName" />
+		<result column="old_value" property="oldValue" />
+		<result column="new_value" property="newValue" />
+		<result column="create_time" property="createTime" />
+		<result column="remark" property="remark" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, assets_log_id AS assetsLogId, type, table_name AS tableName, field, field_name AS fieldName, property_name AS propertyName, old_value AS oldValue, new_value AS newValue, create_time AS createTime, remark
+    </sql>
+</mapper>

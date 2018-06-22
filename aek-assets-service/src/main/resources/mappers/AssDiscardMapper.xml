@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssDiscardMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssDiscard">
+		<id column="id" property="id" />
+		<result column="tenant_id" property="tenantId" />
+		<result column="tenant_name" property="tenantName" />
+		<result column="discard_no" property="discardNo" />
+		<result column="create_time" property="createTime" />
+		<result column="apply_id" property="applyId" />
+		<result column="apply_name" property="applyName" />
+		<result column="verify_id" property="verifyId" />
+		<result column="verify_name" property="verifyName" />
+		<result column="verify_time" property="verifyTime" />
+		<result column="type" property="type" />
+		<result column="apply_instruction" property="applyInstruction" />
+		<result column="status" property="status" />
+		<result column="verify_opinion" property="verifyOpinion" />
+		<result column="remarks" property="remarks" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, tenant_id AS tenantId, tenant_name AS tenantName, discard_no AS discardNo, create_time AS createTime, apply_id AS applyId, apply_name AS applyName, verify_id AS verifyId, verify_name AS verifyName, verify_time AS verifyTime, type, apply_instruction AS applyInstruction, status,remarks, verify_opinion AS verifyOpinion
+    </sql>
+    
+     <select id="search" resultType="com.aek.ebey.assets.model.request.AssetsDisResponse">
+   	SELECT 
+			 i.id  AS assetsId,
+			 i.assets_spec  assetsSpec,
+			 i.assets_num  assetsNum,
+			 i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+		     i.spl_name  splName,
+			 e.factory_name  factoryName,
+			 e.serial_num  serialNum,
+	 		 i.unit_id  unitId,
+			 e.start_use_date startUseDate,
+			 i.dept_id deptId,
+		     i.status status1
+		FROM 
+		     ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		WHERE i.del_flag=0 and i.assets_status=1 and i.status in (1,2,3) 
+		<!-- 资产列表接口数据范围为资产台账在库、在用、预登-->
+		
+		<if test="q.keyword != null and q.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{q.keyword},'%') or i.assets_num LIKE CONCAT('%',#{q.keyword},'%') or e.factory_num LIKE CONCAT('%',#{q.keyword},'%') or e.serial_num LIKE CONCAT('%',#{q.keyword},'%'))
+		</if>
+		<if test="q.status != null and q.status !=''">
+			and i.status = #{q.status}
+		</if>
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<if test="user.tenantId != null">
+			and i.sys_id = #{user.tenantId}
+		</if>
+		ORDER BY i.assets_num DESC
+		
+    
+    </select>
+    
+    <select id="searchApply" resultType="com.aek.ebey.assets.model.AssDiscard">
+    Select
+	    distinct 
+		a.id,
+		a.tenant_id AS tenantId,
+		a.tenant_name AS tenantName,
+		a.discard_no AS discardNo,
+		a.create_time AS createTime,
+		a.apply_id AS applyId,
+		a.apply_name AS applyName,
+		a.verify_id AS verifyId,
+		a.verify_name AS verifyName,
+		a.verify_time AS verifyTime,
+		a.type,
+		a.apply_instruction AS applyInstruction,
+		a. STATUS,
+		a.remarks,
+		a.verify_opinion AS verifyOpinion
+     
+     FROM ass_assets_discard a,ass_assets_discard_detail b where a.id=b.discard_id
+      
+     <if test="q.keyword != null and q.keyword !=''">
+			and (a.discard_no  LIKE CONCAT('%',#{q.keyword},'%') or b.assets_name LIKE CONCAT('%',#{q.keyword},'%'))
+	</if>
+	<if test="q.deptId != null">
+		and b.assets_dept_id = #{q.deptId}
+	</if>
+	<if test="q.status != null  and q.status !=''">
+		and a.status = #{q.status}
+	</if>
+	<if test="q.scope != null and q.scope ==1">
+		and a.tenant_id = #{user.tenantId}
+	</if>
+	<if test="q.scope != null and q.scope ==2">
+		and a.apply_id = #{user.id}
+	</if>
+	<if test="q.type != null and q.type !=''">
+		and a.type = #{q.type}
+	</if>
+	<if test="user.tenantId != null">
+		and a.tenant_id = #{user.tenantId}
+	</if>
+    order by a.create_time  desc
+    </select>
+    
+    <!-- 根据本机构id统计未审核报损单数目 -->
+    <select id="statsWaitAudit" resultType="int">
+    	SELECT COUNT(*) count FROM ass_assets_discard WHERE tenant_id=#{tenantId} AND status=1
+    </select>
+    
+    <select id="getDeptNameByDiscardId" resultType="string">
+    	SELECT assets_dept_name FROM ass_assets_discard_detail WHERE discard_id=#{discardId} GROUP BY assets_dept_name
+    </select>
+</mapper>

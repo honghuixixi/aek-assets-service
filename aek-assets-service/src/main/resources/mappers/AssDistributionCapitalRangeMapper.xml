@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssDistributionCapitalRangeMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssDistributionCapitalRange">
+		<id column="id" property="id" />
+		<result column="tenant_id" property="tenantId" />
+		<result column="type" property="type" />
+		<result column="min_capital" property="minCapital" />
+		<result column="max_capital" property="maxCapital" />
+		<result column="sort" property="sort" />
+		<result column="remarks" property="remarks" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, tenant_id AS tenantId, type, min_capital AS minCapital, max_capital AS maxCapital, sort, remarks
+    </sql>
+    
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+    	SELECT
+			*
+		FROM
+			ass_distribution_capital_range
+		WHERE
+			tenant_id = #{tenantId} 
+		AND type=2 
+		ORDER BY sort
+    </select>
+    
+    <select id="selectDefault" resultMap="BaseResultMap">
+    	SELECT
+			*
+		FROM
+			ass_distribution_capital_range
+		WHERE
+			tenant_id is null 
+		AND type=1
+		ORDER BY sort
+    </select>
+</mapper>

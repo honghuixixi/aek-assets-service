@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.CodeInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.CodeInfo">
+		<id column="id" property="id" />
+		<result column="area_id" property="areaId" />
+		<result column="sys_id" property="sysId" />
+		<result column="type_id" property="typeId" />
+		<result column="parent_type_id" property="parentTypeId" />
+		<result column="code_index" property="codeIndex" />
+		<result column="code_text" property="codeText" />
+		<result column="code_text_py" property="codeTextPy" />
+		<result column="code_value" property="codeValue" />
+		<result column="code_desc" property="codeDesc" />
+		<result column="parent_code_id" property="parentCodeId" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, area_id AS areaId, sys_id AS sysId, type_id AS typeId, parent_type_id AS parentTypeId, code_index AS codeIndex, code_text AS codeText, code_text_py AS codeTextPy, code_value AS codeValue, code_desc AS codeDesc, parent_code_id AS parentCodeId, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag
+    </sql>
+    
+    <select id="getCodeList" resultMap="BaseResultMap">
+        SELECT i.id,i.code_text,i.code_value,i.code_desc,i.parent_code_id
+          FROM ass_code_info i
+         INNER JOIN ass_code_type t ON i.type_id = t.id
+           AND t.del_flag = 0
+           AND t.sys_id = 1
+           AND t.area_id = 1
+           AND t.type_key = #{key}
+         WHERE i.sys_id = 1
+           AND i.area_id = 1
+           AND i.del_flag = 0
+           ORDER BY code_index
+    </select>
+    
+    <select id="getChildCodeList" resultMap="BaseResultMap">
+        SELECT id,code_text,code_value
+          FROM ass_code_info
+         WHERE sys_id = 1
+           AND area_id = 1
+           AND del_flag = 0
+           AND parent_code_id = #{parentCodeId}
+           ORDER BY code_index
+    </select>
+    
+    <!-- 根据id一次性获取多条数据bd_code_info -->
+    <select id="findByIds" parameterType="java.lang.String" resultType="map">
+       SELECT
+             id, 
+             code_text codeText,code_value as codeValue
+       FROM
+             ass_code_info
+       WHERE
+            id IN (${value})
+    </select>
+    
+   <select id="findIdByName" parameterType="string" resultType="long">
+   		SELECT 
+   		   id
+   		FROM
+   		   ass_code_info
+   		WHERE
+   		   code_text = #{name}  
+   </select>
+</mapper>

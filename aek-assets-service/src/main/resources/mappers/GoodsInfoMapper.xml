@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.GoodsInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.GoodsInfo">
+		<id column="id" property="id" />
+		<result column="class_id" property="classId" />
+		<result column="area_id" property="areaId" />
+		<result column="sys_id" property="sysId" />
+		<result column="goods_guid" property="goodsGuid" />
+		<result column="goods_type" property="goodsType" />
+		<result column="type_id" property="typeId" />
+		<result column="goods_standard_type_id" property="goodsStandardTypeId" />
+		<result column="goods_standard_text" property="goodsStandardText" />
+		<result column="goods_standard_level" property="goodsStandardLevel" />
+		<result column="goods_no" property="goodsNo" />
+		<result column="goods_name" property="goodsName" />
+		<result column="goods_name_py" property="goodsNamePy" />
+		<result column="goods_name_wb" property="goodsNameWb" />
+		<result column="goods_management_id" property="goodsManagementId" />
+		<result column="goods_other_flag" property="goodsOtherFlag" />
+		<result column="goods_image_id" property="goodsImageId" />
+		<result column="goods_material_id" property="goodsMaterialId" />
+		<result column="goods_material" property="goodsMaterial" />
+		<result column="goods_sterilize_id" property="goodsSterilizeId" />
+		<result column="goods_sterilize" property="goodsSterilize" />
+		<result column="medicare_flag" property="medicareFlag" />
+		<result column="source_flag" property="sourceFlag" />
+		<result column="fac_id" property="facId" />
+		<result column="fac_name" property="facName" />
+		<result column="reg_no" property="regNo" />
+		<result column="reg_id" property="regId" />
+		<result column="base_data_id" property="baseDataId" />
+		<result column="sync_flag" property="syncFlag" />
+		<result column="assets_type_id" property="assetsTypeId" />
+		<result column="assets_type_text" property="assetsTypeText" />
+		<result column="assets_class_id" property="assetsClassId" />
+		<result column="assets_class_text" property="assetsClassText" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+		<result column="file_list" property="fileList" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, class_id AS classId, area_id AS areaId, sys_id AS sysId, goods_guid AS goodsGuid, goods_type AS goodsType, type_id AS typeId, goods_standard_type_id AS goodsStandardTypeId, goods_standard_text AS goodsStandardText, goods_standard_level AS goodsStandardLevel, goods_no AS goodsNo, goods_name AS goodsName, goods_name_py AS goodsNamePy, goods_name_wb AS goodsNameWb, goods_management_id AS goodsManagementId, goods_other_flag AS goodsOtherFlag, goods_image_id AS goodsImageId, goods_material_id AS goodsMaterialId, goods_material AS goodsMaterial, goods_sterilize_id AS goodsSterilizeId, goods_sterilize AS goodsSterilize, medicare_flag AS medicareFlag, source_flag AS sourceFlag, fac_id AS facId, fac_name AS facName, reg_no AS regNo, reg_id AS regId, base_data_id AS baseDataId, sync_flag AS syncFlag, assets_type_id AS assetsTypeId, assets_type_text AS assetsTypeText, assets_class_id AS assetsClassId, assets_class_text AS assetsClassText, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag, file_list AS fileList
+    </sql>
+    
+    
+     <!-- 手工入库时获取医院基础物资信息 -->
+    <select id="getPMGoods" resultType="com.aek.ebey.assets.model.GoodsInfo">
+        SELECT i.goods_name
+          FROM  ass_goods_info i Where i.del_flag = 0 AND i.sys_id = #{user.orgId} AND i.area_id = #{user.areaId}
+         <if test="keywords != null and keywords != ''">
+                AND i.goods_name LIKE "%"#{keywords}"%"
+         </if>
+         LIMIT 30
+    </select>
+</mapper>

@@ -1,0 +1,42 @@
+[
+	{
+		"assetsName": "DELL屏幕",
+		"factoryName": "浙江小马科技股份有限公司",
+		"assetsSpec": "E1913",
+		"regNo": "国食药监械（准）字2017第1210055号",
+		"factoryNum": "CN-0W7FFX-64180-4AF-1RYL",
+		"threeLevelCode": "682123",
+		"assetsClassIdText": "电子设备",
+		"manageLevelText": "大型设备",
+		"riskLevel": "11",
+		"startUseDateStr": "2017-08-01",
+		"splName": "浙江小马科技股份有限公司",
+		"fundSourcesText": "财政资金",
+		"assetsBrand": "戴尔",
+		"regName": "这是设备注册证名称",
+		"measureTypeText": "强制性计量设备",
+		"deptName": "呼吸内科",
+		"purchaseTypeText": "采购",
+		"priceStr": "3000.25"
+	},
+	{
+		"assetsName": "脉搏血氧仪",
+		"factoryName": "义乌市洪达医疗器械有限公司",
+		"assetsSpec": "Tuffsat",
+		"regNo": "国食药监械（准）字2017第1210056号",
+		"factoryNum": "FCB13140322SA",
+		"threeLevelCode": "682124",
+		"assetsClassIdText": "电子设备",
+		"manageLevelText": "大型设备",
+		"riskLevel": "12",
+		"startUseDateStr": "2017-08-01",
+		"splName": "义乌市洪达医疗器械有限公司",
+		"fundSourcesText": "自筹资金",
+		"assetsBrand": "洪达",
+		"regName": "这是设备注册证名称",
+		"measureTypeText": "非计量设备",
+		"deptName": "呼吸内科",
+		"purchaseTypeText": "采购",
+		"priceStr": "2600.00"
+	}
+]

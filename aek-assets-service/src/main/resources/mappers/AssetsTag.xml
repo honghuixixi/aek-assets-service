@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssetsTagMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssetsTag">
+		<id column="id" property="id" />
+		<result column="width" property="width" />
+		<result column="height" property="height" />
+		<result column="content" property="content" />
+		<result column="assets_sql" property="assetsSql" />
+		<result column="type" property="type" />
+		<result column="enable" property="enable" />
+		<result column="create_time" property="createTime" />
+		<result column="del_flag" property="delFlag" />
+		<result column="remark" property="remark"/>
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,width,height,content,type,assets_sql,enable,create_time,del_flag,remark
+    </sql>
+    
+    <!-- 获取通用的资产标签内容 -->
+    <select id="getCommonAssetsTag" resultMap="BaseResultMap">
+        SELECT 
+        <include refid="Base_Column_List" />
+        FROM ass_assets_tag WHERE type=1 and enable=true and del_flag=false limit 0,1
+    </select>
+   
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssArchiveFolderAttachmentMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssArchiveFolderAttachment">
+		<id column="id" property="id" />
+		<result column="folder_id" property="folderId" />
+		<result column="file_name" property="fileName" />
+		<result column="file_url" property="fileUrl" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, folder_id AS folderId, file_name AS fileName, file_url AS fileUrl, create_time AS createTime
+    </sql>
+</mapper>

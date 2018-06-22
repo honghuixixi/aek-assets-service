@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.ContractAssetMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.ContractAsset">
+		<id column="id" property="id" />
+		<result column="contract_id" property="contractId" />
+		<result column="sys_id" property="sysId" />
+		<result column="area_id" property="areaId" />
+		<result column="assets_id" property="assetsId" />
+		<result column="del_flag" property="delFlag" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, contract_id, sys_id, area_id, assets_id, del_flag
+    </sql>
+    
+    <!-- 获取合同信息 -->
+    <select id="getContractAssetByAssetsId" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_Column_List"></include>
+    	from ass_contract_asset where assets_id = #{assetsId} and del_flag=false
+    </select>
+</mapper>

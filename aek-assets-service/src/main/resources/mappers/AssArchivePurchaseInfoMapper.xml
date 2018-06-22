@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssArchivePurchaseInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssArchivePurchaseInfo">
+		<id column="id" property="id" />
+		<result column="archive_id" property="archiveId" />
+		<result column="assets_id" property="assetsId" />
+		<result column="purchase_type" property="purchaseType" />
+		<result column="apply_date" property="applyDate" />
+		<result column="apply_dept_id" property="applyDeptId" />
+		<result column="prove_date" property="proveDate" />
+		<result column="preview_arrive_date" property="previewArriveDate" />
+		<result column="apply_reason" property="applyReason" />
+		<result column="acceptor" property="acceptor" />
+		<result column="acceptor_dept_name" property="acceptorDeptName" />
+		<result column="acceptor_time" property="acceptorTime" />
+		<result column="purchase_mode" property="purchaseMode" />
+		<result column="tender_form" property="tenderForm" />
+		<result column="single_budget" property="singleBudget" />
+		<result column="tender_date" property="tenderDate" />
+		<result column="build_item_basis" property="buildItemBasis" />
+		<result column="arrival_time" property="arrivalTime" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, archive_id AS archiveId, assets_id AS assetsId, purchase_type AS purchaseType, apply_date AS applyDate, apply_dept_id AS applyDeptId, prove_date AS proveDate, preview_arrive_date AS previewArriveDate, apply_reason AS applyReason, acceptor, acceptor_dept_name AS acceptorDeptName, acceptor_time AS acceptorTime, purchase_mode AS purchaseMode, tender_form AS tenderForm, single_budget AS singleBudget, tender_date AS tenderDate, build_item_basis AS buildItemBasis, arrival_time AS arrivalTime, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime
+    </sql>
+    
+    <update id="updatePurchase">
+    	UPDATE 
+    		ass_archive_purchase_info
+		SET 
+			purchase_type = #{purchase.purchaseType},
+ 			apply_date = #{purchase.applyDate},
+ 			apply_dept_id = #{purchase.applyDeptId}, 
+ 			prove_date = #{purchase.proveDate},
+ 			preview_arrive_date = #{purchase.previewArriveDate},
+ 			apply_reason = #{purchase.applyReason},
+			acceptor = #{purchase.acceptor},
+			acceptor_dept_name = #{purchase.acceptorDeptName},
+			acceptor_time = #{purchase.acceptorTime},
+			purchase_mode = #{purchase.purchaseMode},
+			tender_form = #{purchase.tenderForm},
+			single_budget = #{purchase.singleBudget},
+			tender_date = #{purchase.tenderDate},
+			build_item_basis = #{purchase.buildItemBasis},
+			arrival_time = #{purchase.arrivalTime}
+		WHERE
+			archive_id = #{purchase.archiveId}
+		AND assets_id = #{purchase.assetsId}
+		AND id = #{purchase.id}
+    </update>
+    
+    <select id="getPurchase" resultType="com.aek.ebey.assets.model.vo.AssArchivePurchaseInfoVo">
+    	SELECT
+			id,
+			archive_id archiveId,
+			assets_id assetsId,
+			purchase_type purchaseType,
+			apply_date applyDate,
+			apply_dept_id applyDeptId,
+			prove_date proveDate,
+			preview_arrive_date previewArriveDate,
+			apply_reason applyReason,
+			acceptor,
+			acceptor_dept_name acceptorDeptName,
+			acceptor_time acceptorTime,
+			purchase_mode purchaseMode,
+			tender_form tenderForm,
+			single_budget singleBudget,
+			tender_date tenderDate,
+			build_item_basis buildItemBasis,
+			arrival_time arrivalTime
+		FROM
+			ass_archive_purchase_info
+		WHERE
+			assets_id = #{assetsId}
+		AND archive_id = #{archiveId}
+    </select>
+    
+</mapper>

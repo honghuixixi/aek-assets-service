@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssAssetsLogMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssAssetsLog">
+		<id column="id" property="id" />
+		<result column="assets_id" property="assetsId" />
+		<result column="module_type" property="moduleType" />
+		<result column="operate_type" property="operateType" />
+		<result column="operate_by" property="operateBy" />
+		<result column="operate_by_name" property="operateByName" />
+		<result column="operate_time" property="operateTime" />
+		<result column="remark" property="remark" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, assets_id AS assetsId, module_type AS moduleType, operate_type AS operateType, operate_by AS operateBy, operate_by_name AS operateByName, operate_time AS operateTime, remark
+    </sql>
+    
+    <select id="getLogPage" resultType="com.aek.ebey.assets.model.AssetsLog">
+    	SELECT
+			l.id,
+			l.operate_time operateTime,
+			l.module_type modelType,
+			l.operate_type operateType,
+			l.remark operateDetail
+		FROM
+			ass_assets_log l
+		WHERE
+			l.assets_id =#{q.id}
+		<if test="q.modelType != null and q.modelType !=0">
+			and l.module_type=#{q.modelType}
+		</if>
+		<if test="q.startTime != null and q.endTime==null">
+			and l.operate_time >=#{q.startTime}
+		</if>
+		<if test="q.startTime==null and q.endTime != null">
+			 <![CDATA[and l.operate_time<=#{q.endTime}]]>
+		</if>
+		<if test="q.endTime != null and q.startTime != null">
+			and l.operate_time BETWEEN #{q.startTime} AND #{q.endTime} 
+		</if>
+		ORDER BY l.operate_time DESC
+    </select>
+    
+    <select id="getLogDetail" resultType="com.aek.ebey.assets.model.AssetsLogDetail">
+    	SELECT
+			l.id,
+			l.operate_time operateTime,
+			l.module_type modelType,
+			l.operate_by_name operateName
+		FROM
+			ass_assets_log l
+		WHERE
+			l.id =#{id}
+    </select>
+    
+</mapper>

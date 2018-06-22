@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssetsInfoExtMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssetsInfoExt">
+		<id column="id" property="id" />
+		<result column="assets_id" property="assetsId" />
+		<result column="assets_num" property="assetsNum" />
+		<result column="assets_brand" property="assetsBrand" />
+		<result column="prod_place" property="prodPlace" />
+		<result column="factory_num" property="factoryNum" />
+		<result column="serial_num" property="serialNum" />
+		<result column="manage_level" property="manageLevel" />
+		<result column="measure_type" property="measureType" />
+		<result column="free_tax" property="freeTax" />
+		<result column="commodity_flag" property="commodityFlag" />
+		<result column="quality_flag" property="qualityFlag" />
+		<result column="pm_flag" property="pmFlag" />
+		<result column="start_use_date" property="startUseDate" />
+		<result column="warranty_date" property="warrantyDate" />
+		<result column="dep_type" property="depType" />
+		<result column="dep_status" property="depStatus" />
+		<result column="factory_id" property="factoryId" />
+		<result column="factory_name" property="factoryName" />
+		<result column="reg_id" property="regId" />
+		<result column="reg_name" property="regName" />
+		<result column="reg_no" property="regNo" />
+		<result column="assets_location" property="assetsLocation" />
+		<result column="reception_id" property="receptionId" />
+		<result column="reception_date" property="receptionDate" />
+		<result column="purchase_date" property="purchaseDate" />
+		<result column="arrival_date" property="arrivalDate" />
+		<result column="purchase_type_id" property="purchaseTypeId" />
+		<result column="lend_fee" property="lendFee" />
+		<result column="sasac_num" property="sasacNum" />
+		<result column="polling_flag" property="pollingFlag" />
+		<result column="try_flag" property="tryFlag" />
+		<result column="warranty_flag" property="warrantyFlag" />
+		<result column="repair_flag" property="repairFlag" />
+		<result column="measure_flag" property="measureFlag" />
+		<result column="force_flag" property="forceFlag" />
+		<result column="am_flag" property="amFlag" />
+		<result column="present_flag" property="presentFlag" />
+		<result column="warranty_id" property="warrantyId" />
+		<result column="statutory_scrap_date" property="statutoryScrapDate" />
+		<result column="scrap_date" property="scrapDate" />
+		<result column="dep_amount" property="depAmount" />
+		<result column="surplus_value" property="surplusValue" />
+		<result column="verify_operate_time" property="verifyOperateTime" />
+		<result column="remark" property="remark" />
+		<result column="purchase_way" property="purchaseWay" /><!--2017/11/21 新增  -->
+		<result column="tender_form" property="tenderForm" /><!--2017/11/21 新增  -->
+		<result column="single_budget" property="singleBudget" /><!--2017/11/21 新增  -->
+		<result column="win_tender_date" property="winTenderDate" /><!--2017/11/21 新增  -->
+		<result column="approve_project_accord" property="approveProjectAccord" /><!--2017/11/21 新增  -->
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, assets_id AS assetsId, assets_num AS assetsNum, assets_brand AS assetsBrand, prod_place AS prodPlace, factory_num AS factoryNum, serial_num AS serialNum, manage_level AS manageLevel, measure_type AS measureType, free_tax AS freeTax, commodity_flag AS commodityFlag, quality_flag AS qualityFlag, pm_flag AS pmFlag, start_use_date AS startUseDate, warranty_date AS warrantyDate, dep_type AS depType, dep_status AS depStatus, factory_id AS factoryId, factory_name AS factoryName, reg_id AS regId, reg_no AS regNo, assets_location AS assetsLocation, reception_id AS receptionId, reception_date AS receptionDate, purchase_date AS purchaseDate, arrival_date AS arrivalDate, purchase_type_id AS purchaseTypeId, lend_fee AS lendFee, sasac_num AS sasacNum, polling_flag AS pollingFlag, try_flag AS tryFlag, warranty_flag AS warrantyFlag, repair_flag AS repairFlag, measure_flag AS measureFlag, force_flag AS forceFlag, am_flag AS amFlag, present_flag AS presentFlag, warranty_id AS warrantyId, statutory_scrap_date AS statutoryScrapDate, scrap_date AS scrapDate, dep_amount AS depAmount, surplus_value AS surplusValue, remark
+    </sql>
+    
+    <select id="selectByAssetsId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    SELECT verfy_status as verfyStatus FROM ass_assets_info_ext WHERE assets_id = #{assetsId}
+    </select>
+    
+    <!-- 根据资产id修改资产附加信息 -->
+	<update id="updateByAssetsId" parameterType="com.aek.ebey.assets.model.AssetsInfoExt">
+	UPDATE ass_assets_info_ext
+		SET 
+		 assets_brand = #{assetsBrand},
+		 prod_place = #{prodPlace},
+		 factory_num = #{factoryNum},
+		 serial_num = #{serialNum},
+		 manage_level = #{manageLevel},
+		 measure_type = #{measureType},
+		 free_tax = #{freeTax},
+		 commodity_flag = #{commodityFlag},
+		 quality_flag = #{qualityFlag},
+		 pm_flag = #{pmFlag},
+		 start_use_date = #{startUseDate},
+		 warranty_date = #{warrantyDate},
+		 dep_type = #{depType},
+		 dep_status = #{depStatus},
+		 factory_id = #{factoryId},
+		 reg_id = #{regId},
+		 reg_no = #{regNo},
+		 assets_location = #{assetsLocation},
+		 reception_id = #{receptionId},
+		 reception_date = #{receptionDate},
+		 purchase_date = #{purchaseDate},
+		 arrival_date = #{arrivalDate},
+		 purchase_type_id = #{purchaseTypeId},
+		 lend_fee = #{lendFee},
+		 sasac_num = #{sasacNum},
+		 polling_flag = #{pollingFlag},
+		 try_flag = #{tryFlag},
+		 warranty_flag = #{warrantyFlag},
+		 repair_flag = #{repairFlag},
+		 measure_flag = #{measureFlag},
+		 force_flag = #{forceFlag},
+		 am_flag = #{amFlag},
+		 present_flag = #{presentFlag},
+		 warranty_id = #{warrantyId},
+		 statutory_scrap_date = #{statutoryScrapDate},
+		 scrap_date = #{scrapDate},
+		 dep_amount = #{depAmount},
+		 surplus_value = #{surplusValue},
+		 remark = #{remark},
+		 purpose = #{purpose},
+		 verfy_by=#{verfyBy}
+		WHERE
+			 assets_id = #{assetsId}
+	</update>
+	
+	<select id="findFactoryNum" resultType="map" parameterType="string">
+	SELECT 
+		e.id eId,
+		e.assets_id assetsId,
+		i.assets_source assetsSource,
+		i.putin_num putinNum
+	FROM 
+		ass_assets_info_ext e 
+	LEFT JOIN 
+		ass_assets_info i 
+	ON 
+	 	e.assets_id = i.id
+	WHERE 
+		i.del_flag =0
+	and	e.factory_num = #{factoryNum}
+	</select>
+	<select id="findNum" resultType="int" parameterType="string">
+	SELECT count(i.id)  FROM 
+		ass_assets_info_ext e 
+	JOIN 
+		ass_assets_info i 
+	ON 
+	 	e.assets_id = i.id
+	WHERE 
+		i.del_flag =0 and e.factory_num = #{factoryNum}
+		
+	</select>
+	<update id="updateAssetsInfoExtByAssetsInfoId" parameterType="com.aek.ebey.assets.model.AssetsInfoExt">
+	update ass_assets_info_ext
+	<set>
+		<if test="assetsNum != null and  assetsNum !=''">
+			assets_num = #{assetsNum},
+		</if>
+		<if test="verfyStatus != null and  verfyStatus !=''">
+			verfy_status = #{verfyStatus},
+		</if>
+		
+		<if test="assetsBrand != null and  assetsBrand !=''">
+			assets_brand = #{assetsBrand},
+		</if>
+		<if test="prodPlace != null and  prodPlace !=''">
+			prod_place = #{prodPlace},
+		</if>
+		<if test="factoryNum != null and  factoryNum !=''">
+			factory_num = #{factoryNum},
+		</if>
+		<if test="serialNum != null and  serialNum !=''">
+			serial_num = #{serialNum},
+		</if>
+		<if test="manageLevel != null and  manageLevel !=''">
+			manage_level = #{manageLevel},
+		</if>
+		<if test="measureType != null and  measureType !=''">
+			measure_type = #{measureType},
+		</if>
+		<if test="freeTax != null and  freeTax !=''">
+			free_tax = #{freeTax},
+		</if>
+		<if test="commodityFlag != null and  commodityFlag !=''">
+			commodity_flag = #{commodityFlag},
+		</if>
+		<if test="qualityFlag != null and  qualityFlag !=''">
+			quality_flag = #{qualityFlag},
+		</if>
+		<if test="pmFlag != null and  pmFlag !=''">
+			pm_flag = #{pmFlag},
+		</if>
+		<if test="startUseDate != null">
+			start_use_date = DATE_FORMAT(#{startUseDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="warrantyDate != null">
+			warranty_date = DATE_FORMAT(#{warrantyDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="depType != null and  depType !=''">
+			dep_type = #{depType},
+		</if>
+		<if test="purpose != null and  purpose !=''">
+			purpose = #{purpose},
+		</if>
+		<if test="depStatus != null and  depStatus !=''">
+			dep_status = #{depStatus},
+		</if>
+		<if test="factoryId != null and  factoryId !=''">
+			factory_id = #{factoryId},
+		</if>
+		<if test="factoryName != null and  factoryName !=''">
+			factory_name = #{factoryName},
+		</if>
+		<if test="regId != null and  regId !=''">
+			reg_id = #{regId},
+		</if>
+		<if test="regName != null and  regName !=''">
+			reg_name = #{regName},
+		</if>
+		<if test="regNo != null and  regNo !=''">
+			reg_no = #{regNo},
+		</if>
+		<if test="assetsLocation != null and  assetsLocation !=''">
+			assets_location = #{assetsLocation},
+		</if>
+		<if test="receptionId != null and  receptionId !=''">
+			reception_id = #{receptionId},
+		</if>
+		<if test="receptionDate != null">
+			reception_date = DATE_FORMAT(#{receptionDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="purchaseDate != null">
+			purchase_date =DATE_FORMAT(#{purchaseDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="arrivalDate != null">
+			arrival_date = DATE_FORMAT(#{arrivalDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="purchaseTypeId != null and  purchaseTypeId !=''">
+			purchase_type_id = #{purchaseTypeId},
+		</if>
+		<if test="lendFee != null and  lendFee !=''">
+			lend_fee = #{lendFee},
+		</if>
+		<if test="sasacNum != null and  sasacNum !=''">
+			sasac_num = #{sasacNum},
+		</if>
+		<if test="pollingFlag != null and  pollingFlag !=''">
+			polling_flag = #{pollingFlag},
+		</if>
+		<if test="warrantyFlag != null and  warrantyFlag !=''">
+			warranty_flag = #{warrantyFlag},
+		</if>
+		<if test="repairFlag != null and  repairFlag !=''">
+			repair_flag = #{repairFlag},
+		</if>
+		<if test="measureFlag != null and  measureFlag !=''">
+			measure_flag = #{measureFlag},
+		</if>
+		<if test="forceFlag != null and  forceFlag !=''">
+			force_flag = #{forceFlag},
+		</if>
+		<if test="amFlag != null and  amFlag !=''">
+			am_flag = #{amFlag},
+		</if>
+		<if test="presentFlag != null and  presentFlag !=''">
+			present_flag = #{presentFlag},
+		</if>
+		<if test="warrantyId != null and  warrantyId !=''">
+			warranty_id = #{warrantyId},
+		</if>
+		<if test="statutoryScrapDate != null">
+			statutory_scrap_date = DATE_FORMAT(#{statutoryScrapDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="scrapDate != null">
+			scrap_date = DATE_FORMAT(#{scrapDate},"%Y-%m-%d %h:%m:%s"),
+		</if>
+		<if test="depAmount != null and  depAmount !=''">
+			dep_amount = #{depAmount},
+		</if>
+		<if test="surplusValue != null and  surplusValue !=''">
+			surplus_value = #{surplusValue},
+		</if>
+		<if test="remark != null and  remark !=''">
+			remark = #{remark}
+		</if>
+	</set>
+	where assets_id = #{assetsId}
+</update>
+
+ <update id="updateFactoryName"  parameterType="map">  
+       UPDATE ass_assets_info_ext   
+      <set>  
+        factory_name = #{factoryName} 
+      </set>  
+      WHERE assets_id = #{assetssId}     
+  </update>
+
+   <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+   	insert into ass_assets_info_ext(assets_id, assets_num, assets_brand, prod_place, factory_num, serial_num, manage_level, measure_type, free_tax, commodity_flag, quality_flag, pm_flag, start_use_date, warranty_date, dep_type, dep_status, factory_id, factory_name, reg_id, reg_name, reg_no, assets_location, reception_id, reception_date, purchase_date, arrival_date, purchase_type_id, lend_fee, sasac_num, polling_flag, try_flag, warranty_flag, repair_flag, measure_flag, force_flag, am_flag, present_flag, warranty_id, statutory_scrap_date, scrap_date, dep_amount, surplus_value, remark, purpose)
+   	values
+  		<foreach collection="list" item="item" separator=",">
+  			(#{item.assetsId},#{item.assetsNum},#{item.assetsBrand},#{item.prodPlace},#{item.factoryNum},#{item.serialNum},#{item.manageLevel},#{item.measureType},#{item.freeTax},#{item.commodityFlag},#{item.qualityFlag},#{item.pmFlag},#{item.startUseDate},#{item.warrantyDate},#{item.depType},#{item.depStatus},#{item.factoryId},#{item.factoryName},#{item.regId},#{item.regName},#{item.regNo},#{item.assetsLocation},#{item.receptionId},#{item.receptionDate},#{item.purchaseDate},#{item.arrivalDate},#{item.purchaseTypeId},#{item.lendFee},#{item.sasacNum},#{item.pollingFlag},#{item.tryFlag},#{item.warrantyFlag},#{item.repairFlag},#{item.measureFlag},#{item.forceFlag},#{item.amFlag},#{item.presentFlag},#{item.warrantyId},#{item.statutoryScrapDate},#{item.scrapDate},#{item.depAmount},#{item.surplusValue},#{item.remark},#{item.purpose})
+  		</foreach>
+   </insert>
+   
+   <select id="getAssetByAssetId" resultMap="BaseResultMap">
+   	SELECT * FROM ass_assets_info_ext where assets_id=#{assetId}
+   </select>
+
+	<!-- 更新pm_plan_flag为1,在pm计划中 -->
+	<update id="updateAssetsPmPlanStatusByIds">
+		update ass_assets_info_ext set pm_plan_flag=1 
+		where assets_id in
+		<foreach item="item" index="index" collection="assetsIds" open="(" separator="," close=")">  
+			${item}  
+		</foreach>
+	</update>
+	
+	<update id="changeMtPlanFlagBatch">
+		UPDATE ass_assets_info_ext
+			SET mt_plan_flag = #{flag}
+		WHERE
+			assets_id IN 
+		<foreach item="item" index="index" collection="assetIds" open="(" separator="," close=")">  
+			${item}  
+		</foreach>
+	</update>
+	
+</mapper>

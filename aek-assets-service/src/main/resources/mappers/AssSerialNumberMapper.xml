@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssSerialNumberMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssSerialNumber">
+		<id column="id" property="id" />
+		<result column="tenant_id" property="tenantId" />
+		<result column="sn" property="sn" />
+		<result column="module" property="module" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, tenant_id AS tenantId, sn, module
+	</sql>
+	<select id="findOne" resultType="com.aek.ebey.assets.model.AssSerialNumber">
+		select id, tenant_id AS tenantId, sn, module
+		from ass_serial_number
+		where tenant_id=#{tenantId}
+		and module=#{module}
+	</select>
+	<update id="updateSn" parameterType="com.aek.ebey.assets.model.AssSerialNumber">
+		update ass_serial_number set sn=#{sn} where tenant_id=#{tenantId} and module=#{module}
+	</update>
+
+</mapper>

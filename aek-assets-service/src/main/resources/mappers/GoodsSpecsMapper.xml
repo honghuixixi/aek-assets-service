@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.GoodsSpecsMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.GoodsSpecs">
+		<id column="id" property="id" />
+		<result column="sys_id" property="sysId" />
+		<result column="area_id" property="areaId" />
+		<result column="class_id" property="classId" />
+		<result column="goods_name" property="goodsName" />
+		<result column="goods_id" property="goodsId" />
+		<result column="goods_type" property="goodsType" />
+		<result column="spec_guid" property="specGuid" />
+		<result column="spec_no" property="specNo" />
+		<result column="spec_barcode" property="specBarcode" />
+		<result column="spec_barcode_type" property="specBarcodeType" />
+		<result column="spec_model" property="specModel" />
+		<result column="spec_common_name" property="specCommonName" />
+		<result column="spec_name_en" property="specNameEn" />
+		<result column="spec_name_cn" property="specNameCn" />
+		<result column="spec_package" property="specPackage" />
+		<result column="spec_bigpackstr" property="specBigpackstr" />
+		<result column="spec_basepackstr" property="specBasepackstr" />
+		<result column="spec_basepack_no" property="specBasepackNo" />
+		<result column="spec_basepack_note" property="specBasepackNote" />
+		<result column="spec_minipackstr_id" property="specMinipackstrId" />
+		<result column="spec_minipackstr" property="specMinipackstr" />
+		<result column="spec_miniunit" property="specMiniunit" />
+		<result column="spec_dosetype" property="specDosetype" />
+		<result column="spec_dose" property="specDose" />
+		<result column="spec_doseuintstr" property="specDoseuintstr" />
+		<result column="spec_usagefunc" property="specUsagefunc" />
+		<result column="spec_usages" property="specUsages" />
+		<result column="instructions" property="instructions" />
+		<result column="file_id_list" property="fileIdList" />
+		<result column="goods_material_id" property="goodsMaterialId" />
+		<result column="goods_material" property="goodsMaterial" />
+		<result column="goods_sterilize_id" property="goodsSterilizeId" />
+		<result column="goods_sterilize" property="goodsSterilize" />
+		<result column="reg_id" property="regId" />
+		<result column="reg_no" property="regNo" />
+		<result column="fac_id" property="facId" />
+		<result column="fac_name" property="facName" />
+		<result column="factory_addr" property="factoryAddr" />
+		<result column="spec_brand" property="specBrand" />
+		<result column="goods_unit_id" property="goodsUnitId" />
+		<result column="charge_flag" property="chargeFlag" />
+		<result column="bid_type" property="bidType" />
+		<result column="bid_date" property="bidDate" />
+		<result column="bid_expired_date" property="bidExpiredDate" />
+		<result column="bid_flag" property="bidFlag" />
+		<result column="invite_no" property="inviteNo" />
+		<result column="repeat_flag" property="repeatFlag" />
+		<result column="repeat_no" property="repeatNo" />
+		<result column="repeat_pay" property="repeatPay" />
+		<result column="add_by" property="addBy" />
+		<result column="add_time" property="addTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="source_flag" property="sourceFlag" />
+		<result column="lend_price" property="lendPrice" />
+		<result column="sync_flag" property="syncFlag" />
+		<result column="del_flag" property="delFlag" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sys_id AS sysId, area_id AS areaId, class_id AS classId, goods_name AS goodsName, goods_id AS goodsId, goods_type AS goodsType, spec_guid AS specGuid, spec_no AS specNo, spec_barcode AS specBarcode, spec_barcode_type AS specBarcodeType, spec_model AS specModel, spec_common_name AS specCommonName, spec_name_en AS specNameEn, spec_name_cn AS specNameCn, spec_package AS specPackage, spec_bigpackstr AS specBigpackstr, spec_basepackstr AS specBasepackstr, spec_basepack_no AS specBasepackNo, spec_basepack_note AS specBasepackNote, spec_minipackstr_id AS specMinipackstrId, spec_minipackstr AS specMinipackstr, spec_miniunit AS specMiniunit, spec_dosetype AS specDosetype, spec_dose AS specDose, spec_doseuintstr AS specDoseuintstr, spec_usagefunc AS specUsagefunc, spec_usages AS specUsages, instructions, file_id_list AS fileIdList, goods_material_id AS goodsMaterialId, goods_material AS goodsMaterial, goods_sterilize_id AS goodsSterilizeId, goods_sterilize AS goodsSterilize, reg_id AS regId, reg_no AS regNo, fac_id AS facId, fac_name AS facName, factory_addr AS factoryAddr, spec_brand AS specBrand, goods_unit_id AS goodsUnitId, charge_flag AS chargeFlag, bid_type AS bidType, bid_date AS bidDate, bid_expired_date AS bidExpiredDate, bid_flag AS bidFlag, invite_no AS inviteNo, repeat_flag AS repeatFlag, repeat_no AS repeatNo, repeat_pay AS repeatPay, add_by AS addBy, add_time AS addTime, update_by AS updateBy, update_time AS updateTime, source_flag AS sourceFlag, lend_price AS lendPrice, sync_flag AS syncFlag, del_flag AS delFlag
+    </sql>
+</mapper>

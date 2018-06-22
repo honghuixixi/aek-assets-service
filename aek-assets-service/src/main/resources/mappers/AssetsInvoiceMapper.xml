@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssetsInvoiceMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssetsInvoice">
+		<id column="id" property="id" />
+		<result column="assets_id" property="assetsId" />
+		<result column="invoice_no" property="invoiceNo" />
+		<result column="invoice_money" property="invoiceMoney" />
+		<result column="invoice_date" property="invoiceDate" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, assets_id AS assetsId, invoice_no AS invoiceNo, invoice_money AS invoiceMoney, invoice_date AS invoiceDate
+    </sql>
+    <update id="updateAssetsInvoice" parameterType="com.aek.ebey.assets.model.AssetsInvoice">
+		update ass_assets_invoice
+		<set>
+			<if test="assetsId != null and  assetsId !=''">
+				assets_id = #{assetsId},
+			</if>
+			<if test="invoiceNo != null and  invoiceNo !=''">
+				invoice_no = #{invoiceNo},
+			</if>
+			<if test="invoiceMoney != null and  invoiceMoney !=''">
+				invoice_money = #{invoiceMoney},
+			</if>
+			<if test="invoiceDate != null">
+				invoice_date =DATE_FORMAT( #{invoiceDate},"%Y-%m-%d %h:%m:%s")
+			</if>
+		</set>
+		where id = #{id}
+
+	</update>
+	
+	<select id="getInVoiceNum" resultType="string">
+		SELECT
+			GROUP_CONCAT(t.invoice_no)
+		FROM
+			ass_assets_invoice t
+		WHERE
+			t.assets_id = #{assetId}
+	</select>
+    
+</mapper>

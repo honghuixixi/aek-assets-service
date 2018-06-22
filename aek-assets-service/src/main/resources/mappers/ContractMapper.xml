@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.ContractMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.Contract">
+		<id column="id" property="id" />
+		<result column="sys_id" property="sysId" />
+		<result column="area_id" property="areaId" />
+		<result column="contract_type_id" property="contractTypeId" />
+		<result column="contract_type_text" property="contractTypeText" />
+		<result column="inner_contract_no" property="innerContractNo" />
+		<result column="contract_no" property="contractNo" />
+		<result column="contract_name" property="contractName" />
+		<result column="contract_price" property="contractPrice" />
+		<result column="start_date" property="startDate" />
+		<result column="end_date" property="endDate" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+		<result column="file_list" property="fileList" />
+		<result column="supplier_id" property="supplierId" />
+		<result column="supplier_name" property="supplierName" />
+		<result column="maintain_duration" property="maintainDuration" />
+		<result column="extend_maintain_duration" property="extendMaintainDuration" />
+		<result column="forfeit" property="forfeit" />
+		<result column="acceptance_date" property="acceptanceDate" />
+		<result column="contract_contact_name" property="contractContactName" />
+		<result column="contract_contact_phone" property="contractContactPhone" />
+		<result column="archives_code" property="archivesCode" />
+		<result column="archives_manager" property="archivesManager" />
+		<result column="contract_content" property="contractContent" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sys_id AS sysId, area_id AS areaId, contract_type_id AS contractTypeId, contract_type_text AS contractTypeText, inner_contract_no AS innerContractNo, contract_no AS contractNo, contract_name AS contractName, contract_price AS contractPrice, start_date AS startDate, end_date AS endDate, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag, file_list AS fileList, supplier_id AS supplierId, supplier_name AS supplierName, maintain_duration AS maintainDuration, extend_maintain_duration AS extendMaintainDuration, forfeit, acceptance_date AS acceptanceDate
+    </sql>
+    
+     <!-- 根据资产id修改合同信息 -->
+	<update id="updateByAssetsId" parameterType="com.aek.ebey.assets.model.Contract">
+			UPDATE ass_contract
+			SET 
+			 contract_type_id = #{contractTypeId},
+			 contract_type_text = #{contractTypeText},
+			 inner_contract_no = #{innerContractNo},
+			 contract_no = #{contractNo},
+			 contract_name = #{contractName},
+			 contract_price = #{contractPrice},
+			 start_date = #{startDate},
+			 end_date = #{endDate},
+			 create_by = #{createBy},
+			 create_time = #{createTime},
+			 update_by = #{updateBy},
+			 update_time = #{updateTime},
+			 file_list = #{fileList},
+			 supplier_id = #{supplierId},
+			 supplier_name = #{supplierName},
+			 maintain_duration = #{maintainDuration},
+			 extend_maintain_duration = #{extendMaintainDuration},
+			 forfeit = #{forfeit},
+			 acceptance_date = #{acceptanceDate},
+			 contract_contact_name = #{contractContactName},
+			 contract_contact_phone = #{contractContactPhone},
+			 archives_code = #{archivesCode},
+			 archives_manager = #{archivesManager},
+			 contract_content = #{contractContent}
+			WHERE
+				id=(select contract_id from ass_contract_asset Where assets_id=#{assetsId})
+	</update>
+	<update id="updateContractAsset" parameterType="com.aek.ebey.assets.model.Contract">
+	UPDATE ass_contract
+			<set>
+			<if test="contractTypeId != null and  contractTypeId !=''">
+				contract_type_id = #{contractTypeId},
+			</if>
+			<if test="contractTypeText != null and  contractTypeText !=''">
+				 contract_type_text = #{contractTypeText},
+			</if>
+			<if test="innerContractNo != null and  innerContractNo !=''">
+				 inner_contract_no = #{innerContractNo},
+			</if>
+			<if test="contractNo != null">
+			 contract_no = #{contractNo},
+			</if>
+			<if test="contractName != null">
+				 contract_name = #{contractName},
+			</if>
+			 contract_price = #{contractPrice},
+			<if test="startDate != null">
+				 start_date = #{startDate},
+				 
+			</if>
+			<if test="endDate != null">
+				 end_date = #{endDate},
+			</if>
+			
+			<if test="createBy != null and  createBy !=''">
+				 create_by = #{createBy},
+			</if>
+			<if test="createTime != null">
+				 create_time =#{createTime} ,
+			</if>
+			<if test="updateBy != null and  updateBy !=''">
+				 update_by = #{updateBy},
+			</if>
+			<if test="updateTime != null">
+				 update_time =#{updateTime},
+			</if>
+			<if test="fileList != null and  fileList !=''">
+				 file_list = #{fileList},
+			</if>
+			<if test="supplierId != null and  supplierId !=''">
+				 supplier_id = #{supplierId},
+			</if>
+			
+			<if test="supplierName != null and  supplierName !=''">
+				 supplier_name = #{supplierName},
+			</if>
+			<if test="maintainDuration != null and  maintainDuration !=''">
+			 maintain_duration = #{maintainDuration},
+			</if>
+			<if test="extendMaintainDuration != null and  extendMaintainDuration !=''">
+				  extend_maintain_duration = #{extendMaintainDuration},
+			</if>
+			<if test="forfeit != null and  forfeit !=''">
+				 forfeit = #{forfeit},
+			</if>
+			<if test="acceptanceDate != null">
+				 acceptance_date = #{acceptanceDate},
+			</if>
+			<if test="contractContactName != null">
+				 contract_contact_name = #{contractContactName},
+			</if>
+			<if test="contractContactPhone != null">
+				 contract_contact_phone = #{contractContactPhone},
+			</if>
+			<if test="archivesCode != null">
+				 archives_code = #{archivesCode},
+			</if>
+			<if test="archivesManager != null">
+				 archives_manager = #{archivesManager},
+			</if>
+			<if test="contractContent != null">
+				 contract_content = #{contractContent}
+			</if>
+			</set>
+			WHERE id=#{id}
+	</update>
+	
+</mapper>

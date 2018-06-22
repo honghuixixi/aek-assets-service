@@ -1,0 +1,1326 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssetsInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssetsInfo">
+		<id column="id" property="id" />
+		<result column="sys_id" property="sysId" />
+		<result column="area_id" property="areaId" />
+		<result column="assets_name" property="assetsName" />
+		<result column="assets_num" property="assetsNum" />
+		<result column="parent_id" property="parentId" />
+		<result column="spec_id" property="specId" />
+		<result column="assets_spec" property="assetsSpec" />
+		<result column="class_id" property="classId" />
+		<result column="goods_id" property="goodsId" />
+		<result column="use_by" property="useBy" />
+		<result column="status" property="status" />
+		<result column="assets_status" property="assetsStatus" />
+		<result column="price" property="price" />
+		<result column="spl_id" property="splId" />
+		<result column="spl_name" property="splName" />
+		<result column="assets_type_id" property="assetsTypeId" />
+		<result column="assets_class_id" property="assetsClassId" />
+		<result column="unit_id" property="unitId" />
+		<result column="putin_num" property="putinNum" />
+		<result column="wh_id" property="whId" />
+		<result column="dept_id" property="deptId" />
+		<result column="apply_dept_id" property="applyDeptId" />
+		<result column="apply_type" property="applyType" /><!-- 购置类别 -->
+		<result column="apply_date" property="applyDate" /><!-- 申购日期 -->
+		<result column="proof_date" property="proofDate" /><!-- 论证日期-->
+		<result column="apply_reason" property="applyReason" /><!-- 申购理由-->
+		<result column="manage_dept_id" property="manageDeptId" />
+		<result column="putin_date" property="putinDate" />
+		<result column="scrap_date" property="scrapDate" />
+		<result column="acceptance_date" property="acceptanceDate" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+		<result column="three_level_code" property="threeLevelCode" />
+		<result column="repair_id" property="repairId" />
+		<result column="made_in" property="madeIn" />
+		<result column="transfer_status" property="transferStatus" />
+	</resultMap>
+	
+	<!-- 校验资产是否在转科审核中 -->
+	<select id="checkIsTransfer" resultMap="BaseResultMap">
+		SELECT id,transfer_status 
+		FROM ass_assets_info 
+		WHERE del_flag=0 AND transfer_status=#{transferStatus}
+		<if test="assetIds != null and assetIds.size()>0">
+			and id in 
+		    <foreach item="item" index="index" collection="assetIds" open="(" separator="," close=")">  
+		    	${item}  
+		    </foreach> 
+		</if>
+	</select>
+	
+	<!-- 查询预台账验收状态数量 -->
+	<select id="getStatusNum" resultType="map">
+	    SELECT
+	        count(*) statusNum,e.verfy_status as verfyStatus
+	    FROM 
+	         ass_assets_info  i
+	      LEFT JOIN
+	         ass_assets_info_ext e
+	      ON 
+	         i.id = e.assets_id
+	    WHERE 
+	         i.del_flag  = 0
+	     and i.assets_status=2
+	     and i.sys_id=#{tenantId}
+	     and e.verfy_status IS NOT NULL
+	    GROUP BY 
+	         e.verfy_status
+	</select>
+	
+	<!-- 验收 -->
+	<update id="updateVerify" parameterType="map">
+      UPDATE 
+            ass_assets_info_ext 
+      SET
+            verify_date = #{verifyDate},
+            verify_operate_time = #{verifyOperateTime},
+            verify_remark = #{verifyRemark},
+            verfy_by = #{verfyBy},
+            verfy_status = #{verifyStatus}
+      WHERE 
+            assets_id = #{id} 
+    </update>
+    
+    <update id="addConfirm" parameterType="com.aek.ebey.assets.model.AssetsInfoExt">
+      UPDATE 
+            ass_assets_info_ext 
+      SET
+            verfy_status = #{verfyStatus},verfy_num=#{verfyNum}
+      WHERE 
+            assets_id = #{assetsId} 
+    </update>
+    
+    <sql id="allField">
+       id, assets_id assetsId, assets_num assetsNum, assets_brand assetsBrand,
+       prod_place prodPlace, factory_num factoryNum, serial_num serialNum,
+       manage_level manageLevel, measure_type measureType,free_tax freeTax,
+       commodity_flag commodityFlag, quality_flag qualityFlag, pm_flag pm_Flag,
+       start_use_date startUseDate, warranty_date warrantyDate, dep_type depType,
+       dep_status depStatus, factory_id factoryId, factory_name factoryName,
+       reg_id regId, reg_no regNo, assets_location assetsLocation,
+       reception_id receptionId, reception_date receptionDate, purchase_date purchaseDate,
+       arrival_date arrivalDate, purchase_type_id purchaseTypeId, lend_fee lendFee,
+       sasac_num sasacNum, polling_flag pollingFlag, try_flag tryFlag,
+       warranty_flag warrantyFlag, repair_flag repairFlag, measure_flag measureFlag,
+       force_flag forceFlag, am_flag amFlag, present_flag presentFlag,
+       warranty_id warrantyId, statutory_scrap_date statutoryScrapDate,
+       scrap_date scrapDate, dep_amount depAmount, surplus_value surplusValue,
+       remark, purpose, verify_date verifyDate, verify_remark verifyRemark,
+       verfy_status varfyStatus
+    </sql>
+    
+    <!-- 查询ass_assets_info表该Id是否存在 -->
+    <select id="checkId" parameterType="long" resultType="long">
+    	SELECT id FROM ass_assets_info WHERE id = #{id}
+    </select>
+    <!-- 查询所有信息 -->
+    <select id="getAssetsDetail" resultType="com.aek.ebey.assets.model.Assets">
+          SELECT 
+                i.assets_name assetsName,
+                i.assets_num  assetsNum,
+                i.assets_status assetsStatus,
+			 	i.repair_id  repairId,	
+                i.assets_spec assetsSpec,
+                i.unit_id  unitId,
+                i.assets_type_id assetsTypeId,
+                i.apply_dept_id applyDeptId,
+                i.apply_type applyType,<!-- 购置类别 2017/11/21-->
+                i.apply_date applyDate,<!-- 申购日期 2017/11/21-->
+                i.proof_date proofDate,<!-- 论证日期 2017/11/21-->
+                i.expect_date expectDate,<!-- 预到日期 2017/11/21-->
+                i.apply_reason applyReason,<!-- 申购理由 2017/11/21-->
+                i.dept_id deptId,
+                i.manage_dept_id manageDeptId,
+                i.wh_id whId,<!-- 仓库类型 -->
+                i.spl_name splName,
+                i.price price,
+                i.update_by updateBy,<!-- 最后提交人 -->
+                i.create_by createBy,<!-- 添加人ID -->
+                i.update_time updateTime,<!-- 提交时间，用的是最后修改时间 -->
+                i.assets_class_id assetsClassId,
+                i.assets_img assetsImg,
+                i.acceptance_date acceptanceDate,
+                i.acceptance_person_name acceptancePersonName,<!-- 验收人员 2017/11/21-->
+                i.acceptance_dept_name acceptanceDeptName,<!-- 验收部门 2017/11/21-->
+                i.create_time createTime,
+                i.three_level_code threeLevelCode,
+                i.repair_status repairStatus,
+                <!-- 为了台账详情增加的 -->
+                i.status status,
+                i.assets_source assetsSource,
+                i.made_in madeIn,
+				i.risk_level riskLevel,
+                e.assets_id assetsId,
+                e.factory_name factoryName,
+                e.assets_brand assetsBrand,
+                e.prod_place prodPlace,
+                e.reg_no  regNo,
+                e.factory_num  factoryNum,
+                e.serial_num serialNum,
+                e.manage_level  manageLevel,
+                e.measure_type  measureType,
+                e.measure_flag  measureFlag,
+                e.free_tax  freeTax,
+                e.commodity_flag commodityFlag,
+                e.pm_flag  pmFlag,
+                e.polling_flag pollingFlag,
+                e.quality_flag qualityFlag,
+                e.start_use_date startUseDate,
+                e.purpose purpose,
+                e.dep_amount depAmount,
+                e.warranty_date warrantyDate,
+                e.dep_type depType,
+                e.purchase_type_id purchaseTypeId,
+                e.purchase_date purchaseDate,<!-- 购入日期用的是采购日期 -->
+                e.purchase_way purchaseWay,<!-- 采购方式 2017/11/21-->
+                e.tender_form tenderForm,<!-- 招标形式 2017/11/21-->
+                e.single_budget singleBudget,<!-- 单项预算 2017/11/21-->
+                e.win_tender_date winTenderDate,<!-- 中标时间 2017/11/21-->
+                e.approve_project_accord approveProjectAccord,<!-- 立项依据 2017/11/21-->
+                e.arrival_date arrivalDate,
+                e.verfy_status verfyStatus,
+                e.verfy_by verfyBy,
+                e.verfy_num verfyNum,
+                e.verify_date verifyDate,
+                e.verify_remark verifyRemark,
+                e.reg_name regName,
+                e.verify_operate_time verifyOperateTime,
+                c.id contractId,
+                c.contract_no contractNo,
+                c.contract_name contractName,
+                c.supplier_name supplierName,
+                c.start_date startDate,
+                c.contract_price contractPrice,
+                c.end_date endDate,
+                c.contract_contact_name contractContactName,
+                c.contract_contact_phone contractContactPhone,
+                c.archives_code archivesCode,
+                c.archives_manager archivesManager,
+                c.contract_content contractContent,
+                i.fund_sources_id as fundSourcesId,
+                (select GROUP_CONCAT(s.fund_source_money)  from  ass_assets_fund_sources s WHERE s.assets_id=i.id) as fundSourceMoneys,               
+                 <!-- 多个发票号 -->              
+                (select GROUP_CONCAT(t.invoice_no)  from ass_assets_invoice t WHERE t.assets_id=i.id) invoiceNos              
+           FROM ass_assets_info i 
+           LEFT JOIN ass_assets_info_ext e ON i.id = e.assets_id
+           LEFT JOIN ass_contract_asset f ON i.id = f.assets_id
+           LEFT JOIN ass_contract c ON f.contract_id = c.id
+           WHERE i.del_flag=0 and i.id = #{id}
+           	and i.sys_id=#{user.tenantId}
+			<if test="user.dataScope != null  and user.deptIds !=null and user.dataScope ==2">
+				and i.dept_id in 
+			     <foreach item="item" index="index" collection="user.deptIds" open="(" separator="," close=")">  
+			      ${item}  
+			     </foreach> 
+			</if>
+			<if test="user.dataScope != null and user.dataScope ==3">
+				and i.dept_id = #{user.deptId}
+			</if>
+    </select>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sys_id AS sysId, area_id AS areaId, assets_name AS assetsName, assets_num AS assetsNum, parent_id AS parentId, spec_id AS specId, assets_spec AS assetsSpec, class_id AS classId, goods_id AS goodsId, use_by AS useBy, status, price, spl_id AS splId, spl_name AS splName, assets_type_id AS assetsTypeId, assets_class_id AS assetsClassId, unit_id AS unitId, fund_sources_id as fundSourcesId, putin_num AS putinNum, wh_id AS whId, dept_id AS deptId, apply_dept_id AS applyDeptId, manage_dept_id AS manageDeptId, putin_date AS putinDate, scrap_date AS scrapDate, acceptance_date AS acceptanceDate, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag
+    </sql>
+    
+    
+    
+    <!-- 检索查询 【预台账列表查询】-->
+	<select id="getAssetsPage" resultType="com.aek.ebey.assets.model.Assets">
+		SELECT 
+			 i.id,i.assets_name AS assetsName, i.assets_num AS assetsNum,
+			 i.repair_id  repairId,	i.assets_spec AS assetsSpec, i.spl_name AS splName,
+			 i.dept_id AS deptId,i.create_by AS createBy,i.create_time AS createTime,i.status,i.repair_status as repairStatus,
+			 e.factory_name AS factoryName,e.serial_num AS serialNum,e.verfy_status AS verfyStatus,i.assets_img as assetsImg
+		FROM ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		WHERE i.del_flag=0
+			and i.assets_status=2
+		<if test="q.tenantId != null">
+			and i.sys_id = #{q.tenantId}
+		</if>
+		<!-- 指定查询某个部门数据 -->
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<!-- 未指定时，判断当前用户数据范围 -->
+		<if test="q.deptId == null">
+			<if test="user.dataScope != null  and user.deptIds !=null and user.dataScope ==2">
+				and i.dept_id in 
+			     <foreach item="item" index="index" collection="user.deptIds" open="(" separator="," close=")">  
+			      ${item}  
+			     </foreach> 
+			</if>
+			<if test="user.dataScope != null and user.dataScope ==3">
+				and i.dept_id = #{user.deptId}
+			</if>
+			
+			<if test="user.dataScope != null and user.definedDeptIds !=null and user.dataScope ==4">
+				and i.dept_id in 
+			    <foreach item="item" index="index" collection="user.definedDeptIds" open="(" separator="," close=")">  
+			      ${item}  
+			    </foreach> 
+			</if>
+		</if>
+		<if test="(q.status != null and q.status != '') or q.status==0 ">
+			and e.verfy_status = #{q.status}
+		</if>
+		<if test="q.keyword != null and q.keyword != ''">
+			and (i.assets_name like CONCAT('%',#{q.keyword},'%') OR i.assets_num LIKE CONCAT('%' ,#{q.keyword}, '%') or e.factory_num LIKE CONCAT('%',#{q.keyword},'%') or e.serial_num LIKE CONCAT('%',#{q.keyword},'%')) 
+		</if>
+		<if test="q.sort == null or q.sort ==1 ">
+		
+			ORDER BY create_time DESC
+		</if>
+		<if test="q.sort != null and q.sort ==2 ">
+			ORDER BY verfy_status DESC
+		</if>
+	</select>
+
+	<!-- 查询台账状态数量 -->
+	<select id="getAssetsStatusNum"  resultType="map">
+	     SELECT count(*) assetesStatusNum,i.status statusNum,"全部状态" as status
+	     FROM ass_assets_info i WHERE  i.del_flag = 0 and i.status IN(1,2,4,6)
+		 and i.assets_status=1 and i.sys_id=#{tenantId}
+		 union
+		 SELECT count(*) assetesStatusNum,i.status statusNum,"在库" as status
+		 FROM ass_assets_info i
+		 WHERE  i.del_flag = 0 and i.status=1 
+		 and i.assets_status=1 and i.sys_id=#{tenantId}
+		 union
+		 SELECT count(*) assetesStatusNum,i.status statusNum,"在用" as status
+		 FROM ass_assets_info i
+		 WHERE  i.del_flag = 0 and i.status=2 
+		 and i.assets_status=1
+		 and i.sys_id=#{tenantId}
+		 <!--  union
+		 SELECT count(*) assetesStatusNum,"计量中" as status FROM ass_assets_info WHERE  del_flag = 0 and status=3-->
+		 union
+		 SELECT count(*) assetesStatusNum,i.status statusNum,"维修中" as status
+		 FROM ass_assets_info i
+		 WHERE  i.del_flag = 0 and i.status=4 
+		 and i.assets_status=1 and i.sys_id=#{tenantId}
+		 <!-- union
+		 SELECT count(*) assetesStatusNum,"停用中" as status FROM ass_assets_info WHERE  del_flag = 0 and status=5-->
+		 
+		 union
+		 
+		 SELECT count(*) assetesStatusNum,i.status statusNum,"已报废" as status
+		 FROM ass_assets_info i
+		 WHERE i.del_flag = 0 and i.status=6
+		 and i.assets_status=1
+		 and i.sys_id=#{tenantId}
+		 <!-- union
+		 SELECT count(*) assetesStatusNum,"已报损" as status FROM ass_assets_info WHERE  del_flag = 0 and status=7-->	     
+	</select>
+	
+	<!-- 查询台账每种生成方式数量 -->
+	<select id="getAssetsSourceNum"  resultType="map">
+	   SELECT
+	        count(*) assetesSourceNum,
+	        assets_source assetsSource
+	    FROM 
+	        ass_assets_info  
+	    WHERE 
+	        del_flag = 0 
+			and assets_status=1
+			and sys_id=#{tenantId}
+	    GROUP BY
+	        assets_source
+	</select>
+	
+	<!-- 新建转科单列表查询-->
+	<select id="getTransferPage" resultType="com.aek.ebey.assets.model.Assets">
+		SELECT 
+			 i.id assetsId,
+			 i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+			 i.assets_num  assetsNum,
+			 i.repair_id  repairId,	
+			 i.assets_spec  assetsSpec,
+		     i.spl_name  splName,
+		     i.dept_id deptId,
+		     i.status status,
+		     i.repair_status repairStatus,
+		     i.scrap_date scrapDate,
+		     i.unit_id unitId,
+			 e.factory_name  factoryName,
+			 e.start_use_date startUseDate,
+			 e.serial_num serialNum			 
+		FROM 
+		     ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		WHERE i.del_flag=0
+		<!--查询转科管理中新建转科申请选择设备列表接口查询 -->
+		<!--转科管理数据范围为资产台账在库、在用、预登，转科审核通过或未通过且维修状态正常的数据-->
+		<if test="q.status != null and q.status == 0">
+			and i.assets_status=1 and i.status in (1,2,3)
+			and (i.transfer_status=2 OR i.transfer_status is null)
+			<!-- and i.repair_status = 1 and i.repair_id is null -->
+		</if>
+		<if test="q.status != null and q.status != 0">
+			and i.assets_status=1
+			and i.status =#{q.status}
+			and (i.transfer_status=2 OR i.transfer_status is null)
+			<!-- and i.repair_status = 1 and i.repair_id is null -->
+		</if>
+		<if test="q.tenantId != null">
+			and i.sys_id = #{q.tenantId}
+		</if>
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<if test="q.keyword != null and q.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{q.keyword},'%') or i.assets_num LIKE CONCAT('%',#{q.keyword},'%') or e.factory_num LIKE CONCAT('%',#{q.keyword},'%') or e.serial_num LIKE CONCAT('%',#{q.keyword},'%'))
+		</if>
+		<!--转科管理按资产编号倒序排序-->
+		ORDER BY i.assets_num DESC		
+	</select>
+	
+	<!-- 台账列表查询 -->
+	<select id="getLedgerPage" resultType="com.aek.ebey.assets.model.Assets">
+		SELECT 
+			 i.id,i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+			 i.assets_num  assetsNum,
+			 i.repair_id  repairId,	
+			 i.assets_spec  assetsSpec,
+		     i.spl_name  splName,
+		     i.dept_id deptId,
+		     i.assets_source  assetsSource,
+		     i.status status,
+		     i.repair_status repairStatus,
+		     i.scrap_date scrapDate,
+			 e.factory_name  factoryName,
+			 e.assets_brand  assetsBrand,
+			 e.factory_num  factoryNum,
+			 e.warranty_date warrantyDate,
+			 e.start_use_date startUseDate,
+			 e.serial_num serialNum
+		FROM 
+		     ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		WHERE i.del_flag=0
+		<!-- status=99时，表示查询维修管理中新建维修申请选择设备列表接口查询 -->
+		<!-- 资产列表接口数据范围为资产台账在库、在用、预登且维修状态正常的数据，预台账验收通过且维修状态正常的数据-->
+		<if test="q.status != null and q.status == 99">
+			and (
+					(i.assets_status=1 and i.status in (1,2,3)) 
+					or 
+					(i.assets_status=2 and e.verfy_status=2)
+				) and i.repair_status = 1 and i.repair_id is null
+		</if>
+		<if test="q.status == null or q.status != 99">
+			and i.assets_status=1
+		</if>
+		<if test="q.tenantId != null">
+			and i.sys_id = #{q.tenantId}
+		</if>
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null  and user.deptIds !=null and user.dataScope ==2">
+			and i.dept_id in 
+		     <foreach item="item" index="index" collection="user.deptIds" open="(" separator="," close=")">  
+		      ${item}  
+		     </foreach> 
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.dataScope ==3">
+			and i.dept_id = #{user.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.definedDeptIds !=null and user.dataScope ==4">
+				and i.dept_id in 
+			    <foreach item="item" index="index" collection="user.definedDeptIds" open="(" separator="," close=")">  
+			      ${item}  
+			    </foreach> 
+		</if>
+		<if test="q.assetsSource !=null">
+		    and i.assets_source = #{q.assetsSource}
+		</if>
+		<if test="q.status != null and q.status != 0 and q.status != 99">
+			and i.status = #{q.status}
+		</if>
+		<if test="q.keyword != null and q.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{q.keyword},'%') or i.assets_num LIKE CONCAT('%',#{q.keyword},'%') or e.factory_num LIKE CONCAT('%',#{q.keyword},'%') or e.serial_num LIKE CONCAT('%',#{q.keyword},'%'))
+		</if>
+		<if test="q.sort != null and q.sort ==1 ">
+			ORDER BY i.create_time DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==2 ">
+			ORDER BY i.price DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==3 ">
+			ORDER BY i.price, i.id DESC
+		</if>
+	</select>
+	
+	<select id="getReportAssetsList" resultType="map">
+	select ${colum},i.id
+	from  ass_assets_info i 
+		LEFT JOIN  ass_assets_info_ext e ON i.id=e.assets_id
+		LEFT JOIN  ass_contract_asset f ON  i.id = f.assets_id
+        LEFT JOIN  ass_contract c  ON  f.contract_id = c.id
+	WHERE 
+	    i.del_flag=0
+		and i.assets_status=1
+		and i.sys_id = #{sysId}
+	    <if test="data != 2">
+	      <if test="areaId != null">
+			and i.area_id = #{areaId}
+		  </if>
+	      <if test="deptId != null">
+			and i.dept_id = #{deptId}
+		  </if>
+		  <if test="assetsSource !=null and (assetsSource == 0 or assetsSource == 1)">
+		    and i.assets_source = #{assetsSource}
+		  </if>
+		  <if test="status != null and status != 0">
+			and i.status = #{status}
+		  </if>
+		  <if test="keyword != null and keyword != ''">
+		  	<!-- 特殊字符处理 -->
+			<if test='keyword == "%" or keyword == "[" or keyword == "[]" or keyword == "_"'>
+				and (i.assets_name like CONCAT('%[',#{keyword},']%') OR i.assets_num LIKE CONCAT('%[' ,#{keyword}, ']%')) 
+			</if>
+			<if test='keyword != "%" and keyword != "[" and keyword != "[]" and keyword != "_"'>
+				and (i.assets_name like CONCAT('%',#{keyword},'%') OR i.assets_num LIKE CONCAT('%' ,#{keyword}, '%')) 
+			</if>
+		  </if>
+		  <if test="ids != null and ids.length>0">
+		    and i.id in 
+		     <foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+		      #{item}  
+		     </foreach> 
+		  </if>
+	      </if>
+		  <if test="sort == null or sort ==1 ">
+			ORDER BY i.create_time DESC, i.id DESC
+		  </if>
+		  <if test="sort != null and sort ==2 ">
+			ORDER BY i.price DESC, i.id DESC
+		  </if>
+		  <if test="sort != null and sort ==3 ">
+			ORDER BY price, i.id DESC
+		  </if> 
+	</select>
+	
+	<!-- 查询部门是否有存在有效的台账信息 -->
+	<select id="deviceQuery" parameterType="integer" resultType="integer">
+		SELECT COUNT(*) FROM ass_assets_info WHERE dept_id in 
+			<foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">  
+		      #{item}  
+		     </foreach> 
+		AND del_flag = 0
+	</select>
+
+	<!-- 台账曲线图 (初始数据)-->
+	<select id="queryAssetsHis" resultType="com.aek.ebey.assets.model.vo.AssetsCurveVo">
+		SELECT count(1) count,SUM(IFNULL(a.price,0)) as price
+		FROM `ass_assets_info` a left join ass_assets_info_ext e
+		on a.id = e.assets_id
+		where a.del_flag=FALSE
+		<if test="startDate != null">
+			and IFNULL(a.putin_date,a.create_time) <![CDATA[ < ]]> #{startDate}
+		</if>
+		<!-- 4：维修中 查询维修中的设备 -->
+		<if test="status != null and status == 4">
+			and a.repair_status = 2 and a.repair_id is not null
+		</if>
+		<if test="status == null">
+			and a.status <![CDATA[ < ]]> 6
+		</if>
+		<if test="tenantId != null">
+			and a.sys_id = #{tenantId}
+		</if>
+		<if test="tenantIds != null">
+			and a.sys_id in
+			<foreach item="item" index="index" collection="tenantIds" open="(" separator="," close=")">  
+		      #{item}
+		     </foreach> 
+		</if>
+		<!-- 资产台账1=在库、2=在用、3=预登、4=待报损状态数据，预台账验收通过数据 -->
+		and ((a.assets_status=1 and a.status in(1,2,3,4)) or (a.assets_status=2 and e.verfy_status=2))
+	</select>
+
+	<!-- 台账曲线图 -->
+	<select id="queryAssetsCurve" resultType="com.aek.ebey.assets.model.vo.AssetsCurveVo">
+		SELECT DATE_FORMAT(IFNULL(a.putin_date,a.create_time),'%Y-%m-%d') as date,count(1) count,SUM(IFNULL(a.price,0)) as price
+		FROM `ass_assets_info` a left join ass_assets_info_ext e
+		on a.id = e.assets_id
+		where a.del_flag=FALSE
+		<if test="startDate != null">
+			and IFNULL(a.putin_date,a.create_time) <![CDATA[ >= ]]> #{startDate}
+		</if>
+		<if test="endDate != null">
+			and IFNULL(a.putin_date,a.create_time) <![CDATA[ < ]]> #{endDate}
+		</if>
+		<!-- 4：维修中 查询维修中的设备 -->
+		<if test="status != null and status == 4">
+			and a.repair_status = 2 and a.repair_id is not null
+		</if>
+		<if test="status == null">
+			and a.status <![CDATA[ < ]]> 6
+		</if>
+		<if test="tenantId != null">
+			and a.sys_id = #{tenantId}
+		</if>
+		<if test="tenantIds != null">
+			and a.sys_id in
+			<foreach item="item" index="index" collection="tenantIds" open="(" separator="," close=")">  
+		      #{item}
+		     </foreach> 
+		</if>
+		<!-- 资产台账1=在库、2=在用、3=预登、4=待报损状态数据，预台账验收通过数据 -->
+		and ((a.assets_status=1 and a.status in(1,2,3,4)) or (a.assets_status=2 and e.verfy_status=2))
+		GROUP BY DATE_FORMAT(IFNULL(a.putin_date,a.create_time),'%Y-%m-%d')
+	</select>
+	
+	<select id="getAssetsCount" parameterType="long" resultType="com.aek.ebey.assets.model.AssetsCount">
+		<!-- 设备资产数统计 -->
+		select COUNT(a.id) as count,1 as status 
+		from ass_assets_info a 
+		left join ass_assets_info_ext e on a.id = e.assets_id 
+		where a.del_flag=FALSE
+		<!-- 资产台账1=在库、2=在用、3=预登、4=待报损状态数据，预台账验收通过数据 -->
+		and ((a.assets_status=1 and a.status in(1,2,3,4)) or (a.assets_status=2 and e.verfy_status=2))
+		<if test="sysIds != null">
+			and sys_id in
+			<foreach item="item" index="index" collection="sysIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+		
+		union all
+	
+		<!-- 维修中的设备资产数统计 -->
+		select COUNT(a.id) as count,4 as status 
+		from ass_assets_info a 
+		left join ass_assets_info_ext e on a.id = e.assets_id 
+		where a.repair_status=2 and a.repair_id is not null and a.del_flag=FALSE
+		and (a.assets_status=1 or (a.assets_status=2 and e.verfy_status=2))
+		<if test="sysIds != null">
+			and sys_id in
+			<foreach item="item" index="index" collection="sysIds" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+		</if>
+	</select>
+	
+	<select id="getAssetsNumAndMoney" parameterType="long"  resultType="com.aek.ebey.assets.model.AssetsNumAndMoney">
+		SELECT  
+			COUNT(a.id) AS num, 
+			IFNULL(SUM(a.price),0) AS sumPrice 
+		FROM ass_assets_info  a left join ass_assets_info_ext e on a.id = e.assets_id 
+		WHERE a.del_flag=FALSE
+		<if test="sysIds != null">
+		and sys_id in
+		<foreach item="item" index="index" collection="sysIds" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+		</if>
+		<!-- 资产台账在库，在用，预登，待报损，预台账验收通过 -->
+		and ((a.assets_status=1 AND a.status in (1,2,3,4)) or (a.assets_status=2 and e.verfy_status=2))
+	</select>
+	
+	 <update id="updateAssetsInfoById" parameterType="com.aek.ebey.assets.model.AssetsInfo">
+		update ass_assets_info
+		<set>
+			<if test="sysId != null and  sysId !=''">
+				sys_id = #{sysId},
+			</if>
+			<if test="areaId != null and  areaId !=''">
+				area_id = #{areaId},
+			</if>
+			<if test="assetsName != null and  assetsName !=''">
+				assets_name = #{assetsName},
+			</if>
+			<if test="assetsNum != null and  assetsNum !=''">
+				assets_num = #{assetsNum},
+			</if>
+			<if test="parentId != null and  parentId !=''">
+				parent_id = #{parentId},
+			</if>
+			<if test="specId != null and  specId !=''">
+				spec_id = #{specId},
+			</if>
+			<if test="assetsSpec != null and  assetsSpec !=''">
+				assets_spec = #{assetsSpec},
+			</if>
+			<if test="assetsSpec == null or  assetsSpec ==''">
+				assets_spec = null,
+			</if>
+			<if test="classId != null and  classId !=''">
+				class_id = #{classId},
+			</if>
+			<if test="goodsId != null and  goodsId !=''">
+				goods_id = #{goodsId},
+			</if>
+			<if test="useBy != null and  useBy !=''">
+				use_by = #{useBy},
+			</if>
+			<if test="status != null and  status !=''">
+				status = #{status},
+			</if>
+			<if test="assetsStatus != null and  assetsStatus !=''">
+				assets_status = #{assetsStatus},
+			</if>
+				price = #{price},
+			<if test="splId != null and  splId !=''">
+				spl_id = #{splId},
+			</if>
+			<if test="splName != null">
+				spl_name = #{splName},
+			</if>
+			<if test="assetsTypeId != null and  assetsTypeId !=''">
+				assets_type_id = #{assetsTypeId},
+			</if>
+			<if test="assetsClassId != null and  assetsClassId !=''">
+				assets_class_id = #{assetsClassId},
+			</if>
+			<if test="unitId != null and  unitId !=''">
+				unit_id = #{unitId},
+			</if>
+			<if test="whId != null and  whId !=''">
+				wh_id = #{whId},
+			</if>
+			<if test="deptId != null and  deptId !=''">
+				dept_id = #{deptId},
+			</if>
+			<!-- 新加字段 -->
+			<if test="applyType != null">
+				apply_type = #{applyType},
+			</if>
+			<if test="applyDate != null">
+				apply_date = #{applyDate},
+			</if>
+			<if test="proofDate  != null">
+				proof_date = #{proofDate},
+			</if>
+			<if test="expectDate != null">
+				expect_date = #{expectDate},
+			</if>
+			<if test="applyReason != null">
+				apply_reason = #{applyReason},
+			</if>
+				acceptance_person_name = #{acceptancePersonName},
+			<if test="acceptanceDeptName != null">
+				acceptance_dept_name = #{acceptanceDeptName},
+			</if>
+			<!-- 新加字段 -->
+			<if test="fundSourcesId != null and  fundSourcesId !=''">
+				fund_sources_id = #{fundSourcesId},
+			</if>
+			<if test="applyDeptId != null and  applyDeptId !=''">
+				apply_dept_id = #{applyDeptId},
+			</if>
+			<if test="manageDeptId != null and  manageDeptId !=''">
+				manage_dept_id = #{manageDeptId},
+			</if>
+			<if test="putinDate != null">
+				putin_date =#{putinDate},
+			</if>
+			<if test="scrapDate != null">
+				scrap_date =#{scrapDate},
+			</if>
+			<if test="acceptanceDate != null">
+				acceptance_date = #{acceptanceDate},
+			</if>
+			<if test="createBy != null and  createBy !=''">
+				create_by = #{createBy},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime},
+			</if>
+			<if test="updateBy != null and  updateBy !=''">
+				update_by = #{updateBy},
+			</if>
+			<if test="updateTime != null">
+				update_time =#{updateTime},
+			</if>
+			<if test="delFlag != null and  delFlag !=''">
+				del_flag = #{delFlag},
+			</if>
+			<if test="threeLevelCode != null and  threeLevelCode !=''">
+				three_level_code = #{threeLevelCode},
+			</if>
+			<if test="threeLevelCode == null or  threeLevelCode ==''">
+				three_level_code = null,
+			</if>
+				assets_img = #{assetsImg},
+			<if test="madeIn != null and  madeIn !=''">
+				made_in = #{madeIn},
+			</if>
+			<if test="riskLevel != null and  riskLevel !=''">
+				risk_level = #{riskLevel},
+			</if>
+			<if test="riskLevel == null or  riskLevel ==''">
+				risk_level = null
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<!-- 批量设置设备状态 -->
+	<update id="updateBatchAssetsStatus"  parameterType="map">  
+	 <foreach collection="assetssIds" index="index" item="item" separator=";">
+         UPDATE ass_assets_info   
+        <set>  
+          STATUS = #{status} 
+        </set>
+        WHERE ID = #{item} 
+        and status in(1,2,3)
+      </foreach>       
+    </update>
+    
+    <!-- 批量设置设备部门 -->  
+	<update id="updateBatchAssetsDepartment"  parameterType="map">  
+	 <foreach collection="assetssIds" index="index" item="item" separator=";">
+         UPDATE ass_assets_info   
+        <set>
+          dept_id = #{deptId} ,  apply_dept_id = #{applyDeptId} ,  manage_dept_id = #{manageDeptId} 
+        </set>  
+        WHERE ID = #{item}  
+      </foreach>       
+  </update>
+    
+  <update id="updateAssetsName"  parameterType="map">  
+         UPDATE ass_assets_info   
+        <set>  
+          assets_name = #{assetsName} 
+        </set>  
+        WHERE ID = #{assetssId}     
+  </update>
+
+   <insert id="batchInsert" useGeneratedKeys="true" keyProperty="id">
+   	insert into ass_assets_info(sys_id, area_id, assets_name, assets_num, parent_id, spec_id, assets_spec, class_id, goods_id, use_by, status,repair_status, assets_status, price, spl_id, spl_name, assets_type_id, assets_class_id, fund_sources_id, unit_id, putin_num, wh_id, dept_id, apply_dept_id, manage_dept_id, putin_date, scrap_date, acceptance_date, create_by, create_time, update_by, update_time, del_flag, assets_img, assets_source, three_level_code,risk_level)
+   	values
+  		<foreach collection="list" item="item" separator=",">
+  			(#{item.sysId},#{item.areaId},#{item.assetsName},#{item.assetsNum},#{item.parentId},#{item.specId},#{item.assetsSpec},#{item.classId},#{item.goodsId},#{item.useBy},#{item.status},#{item.repairStatus},#{item.assetsStatus},#{item.price},#{item.splId},#{item.splName},#{item.assetsTypeId},#{item.assetsClassId},#{item.fundSourcesId},#{item.unitId},#{item.putinNum},#{item.whId},#{item.deptId},#{item.applyDeptId},#{item.manageDeptId},#{item.putinDate},#{item.scrapDate},#{item.acceptanceDate},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime},#{item.delFlag},#{item.assetsImg},#{item.assetsSource},#{item.threeLevelCode},#{item.riskLevel})
+  		</foreach>
+   </insert>
+
+	<select id="getAssetsByTenantIds" parameterType="long" resultType="com.aek.ebey.assets.model.request.TenantAssets">
+		SELECT tenantId,sum(assetsTotal) assetsTotal from
+		(
+			<!-- 在库，在用，预登，待报损状态台账 -->
+			SELECT a.sys_id tenantId,count(a.id) assetsTotal
+			FROM ass_assets_info a
+			WHERE a.del_flag = 0 and a.sys_id in
+			<foreach item="item" index="index" collection="ids" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+			and a.assets_status = 1 and a.status in(1,2,3,4)
+			GROUP BY a.sys_id 
+			
+			union all
+			
+			<!-- 验收通过预台账 -->
+			SELECT a.sys_id tenantId,count(a.id) assetsTotal
+			FROM ass_assets_info a 
+			INNER JOIN ass_assets_info_ext e ON a.id = e.assets_id
+			WHERE a.del_flag = 0 and a.sys_id in
+			<foreach item="item" index="index" collection="ids" open="("
+				separator="," close=")">
+				#{item}
+			</foreach>
+			and a.assets_status = 2 and e.verfy_status=2
+			GROUP BY a.sys_id
+		) b 
+		GROUP BY tenantId
+	</select>
+
+
+	<!-- 
+		监管树：资产台账/验收通过预台账数据
+	 -->
+	<select id="getPageAssets" resultType="com.aek.ebey.assets.model.Assets">
+		SELECT 
+			 i.id,
+			 i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+			 i.assets_num  assetsNum,
+			 i.repair_id  repairId,	
+			 i.assets_spec  assetsSpec,
+		     i.spl_name  splName,
+		     i.dept_id deptId,
+		     i.assets_source  assetsSource,
+		     i.status status,
+		     i.repair_status repairStatus,
+		     i.assets_status assetsStatus,
+		     i.scrap_date scrapDate,
+			 e.factory_name  factoryName,
+			 e.assets_brand  assetsBrand,
+			 e.factory_num  factoryNum,
+			 e.warranty_date warrantyDate,
+			 e.start_use_date startUseDate
+		FROM 
+		     ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- 资产台账1=在库、2=在用、3=预登、4=待报损状态数据，预台账验收通过数据 -->
+		WHERE i.del_flag=0 and ((i.assets_status=1 and i.status in(1,2,3,4)) or (i.assets_status=2 and e.verfy_status=2))
+		<if test="q.status != null and q.status != ''">
+			 and i.status=#{q.status}
+		</if>
+		<if test="q.tenantId != null">
+			and i.sys_id = #{q.tenantId}
+		</if>
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null  and user.deptIds !=null and user.dataScope ==2">
+			and i.dept_id in 
+		     <foreach item="item" index="index" collection="user.deptIds" open="(" separator="," close=")">  
+		      ${item} 
+		     </foreach>
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.dataScope ==3">
+			and i.dept_id = #{user.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.definedDeptIds !=null and user.dataScope ==4">
+				and i.dept_id in 
+			    <foreach item="item" index="index" collection="user.definedDeptIds" open="(" separator="," close=")">  
+			      ${item}  
+			    </foreach> 
+		</if>
+		<if test="q.assetsSource !=null and q.assetsSource !=''">
+		    and i.assets_source = #{q.assetsSource}
+		</if>
+		<if test="q.keyword != null and q.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{q.keyword},'%') or i.assets_num LIKE CONCAT('%',#{q.keyword},'%'))
+		</if>
+		<if test="q.sort != null and q.sort ==1 ">
+			ORDER BY i.create_time DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==2 ">
+			ORDER BY i.price DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==3 ">
+			ORDER BY i.price, i.id DESC
+		</if>
+	</select>	
+	
+	<!-- 
+		监管树：验收通过预台账数据
+	 -->
+	<select id="getPageAssets2" resultType="com.aek.ebey.assets.model.Assets">
+		SELECT 
+			 i.id,
+			 i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+			 i.assets_num  assetsNum,
+			 i.repair_id  repairId,	
+			 i.assets_spec  assetsSpec,
+		     i.spl_name  splName,
+		     i.dept_id deptId,
+		     i.assets_source  assetsSource,
+		     i.status status,
+		     i.repair_status repairStatus,
+		     i.assets_status assetsStatus,
+		     i.scrap_date scrapDate,
+			 e.factory_name  factoryName,
+			 e.assets_brand  assetsBrand,
+			 e.factory_num  factoryNum,
+			 e.warranty_date warrantyDate,
+			 e.start_use_date startUseDate
+		FROM 
+		     ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		WHERE i.del_flag=0 and i.assets_status=2 and e.verfy_status=2
+		<if test="q.tenantId != null">
+			and i.sys_id = #{q.tenantId}
+		</if>
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null  and user.deptIds !=null and user.dataScope ==2">
+			and i.dept_id in 
+		     <foreach item="item" index="index" collection="user.deptIds" open="(" separator="," close=")">  
+		      ${item} 
+		     </foreach>
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.dataScope ==3">
+			and i.dept_id = #{user.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.definedDeptIds !=null and user.dataScope ==4">
+				and i.dept_id in 
+			    <foreach item="item" index="index" collection="user.definedDeptIds" open="(" separator="," close=")">  
+			      ${item}  
+			    </foreach> 
+		</if>
+		<if test="q.assetsSource !=null and q.assetsSource !=''">
+		    and i.assets_source = #{q.assetsSource}
+		</if>
+		<if test="q.keyword != null and q.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{q.keyword},'%') or i.assets_num LIKE CONCAT('%',#{q.keyword},'%'))
+		</if>
+		<if test="q.sort != null and q.sort ==1 ">
+			ORDER BY i.create_time DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==2 ">
+			ORDER BY i.price DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==3 ">
+			ORDER BY i.price, i.id DESC
+		</if>
+	</select>	
+	
+	<!-- 
+		监管树：资产台账数据
+	 -->
+	<select id="getPageAssets3" resultType="com.aek.ebey.assets.model.Assets">
+		SELECT 
+			 i.id,
+			 i.assets_name  assetsName, 
+			 i.assets_img  assetsImg,
+			 i.assets_num  assetsNum,
+			 i.repair_id  repairId,	
+			 i.assets_spec  assetsSpec,
+		     i.spl_name  splName,
+		     i.dept_id deptId,
+		     i.assets_source  assetsSource,
+		     i.status status,
+		     i.repair_status repairStatus,
+		     i.assets_status assetsStatus,
+		     i.scrap_date scrapDate,
+			 e.factory_name  factoryName,
+			 e.assets_brand  assetsBrand,
+			 e.factory_num  factoryNum,
+			 e.warranty_date warrantyDate,
+			 e.start_use_date startUseDate
+		FROM 
+		     ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- 资产台账1=在库、2=在用、3=预登、4=待报损状态数据 -->
+		WHERE i.del_flag=0 and i.assets_status=1 and i.status in(1,2,3,4)
+		<if test="q.status != null and q.status != ''">
+			 and i.status=#{q.status}
+		</if>
+		<if test="q.tenantId != null">
+			and i.sys_id = #{q.tenantId}
+		</if>
+		<if test="q.deptId != null">
+			and i.dept_id = #{q.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null  and user.deptIds !=null and user.dataScope ==2">
+			and i.dept_id in 
+		     <foreach item="item" index="index" collection="user.deptIds" open="(" separator="," close=")">  
+		      ${item} 
+		     </foreach>
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.dataScope ==3">
+			and i.dept_id = #{user.deptId}
+		</if>
+		<if test="q.deptId == null and user.dataScope != null and user.definedDeptIds !=null and user.dataScope ==4">
+				and i.dept_id in 
+			    <foreach item="item" index="index" collection="user.definedDeptIds" open="(" separator="," close=")">  
+			      ${item}  
+			    </foreach> 
+		</if>
+		<if test="q.assetsSource !=null and q.assetsSource !=''">
+		    and i.assets_source = #{q.assetsSource}
+		</if>
+		<if test="q.keyword != null and q.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{q.keyword},'%') or i.assets_num LIKE CONCAT('%',#{q.keyword},'%'))
+		</if>
+		<if test="q.sort != null and q.sort ==1 ">
+			ORDER BY i.create_time DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==2 ">
+			ORDER BY i.price DESC, i.id DESC
+		</if>
+		<if test="q.sort != null and q.sort ==3 ">
+			ORDER BY i.price, i.id DESC
+		</if>
+	</select>
+	
+	<!-- 巡检设备列表查询 -->
+	<select id="getQcAssetsList" resultType="com.aek.ebey.assets.model.AssetsQc">
+		SELECT 
+			 i.id assetsId,
+			 i.assets_name  assetsName, 
+			 i.assets_num  assetsNum,
+			 i.assets_spec  assetsSpec,
+		     i.dept_id assetsDeptId,
+		     i.assets_status assetsStatus,
+		     i.assets_img imgUrl
+		FROM ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- 巡检实施中资产范围为资产台账在库、在用、预登状态数据，预台账验收通过数据 -->
+		WHERE i.del_flag=0 and e.polling_flag=1 and ((i.assets_status=1 and i.status in(1,2,3)) or (i.assets_status=2 and e.verfy_status=2))
+		<if test="tenantId != null">
+			and i.sys_id = #{tenantId}
+		</if>
+		<if test="deptIds != null">
+			and i.dept_id in 
+		     <foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">  
+		      ${item} 
+		     </foreach>
+		</if>
+		order by i.dept_id asc,i.assets_status asc,i.assets_num desc
+	</select>	
+	
+	<!-- 巡检设备列表分页查询 -->
+	<select id="getQcAssetsPage" resultType="com.aek.ebey.assets.model.AssetsQc">
+		SELECT 
+			 i.id assetsId,
+			 i.assets_name  assetsName, 
+			 i.assets_num  assetsNum,
+			 i.assets_spec  assetsSpec,
+		     i.dept_id assetsDeptId,
+		     i.assets_status assetsStatus,
+		     i.assets_img imgUrl
+		FROM ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- 巡检实施中资产范围为资产台账在库、在用、预登的数据，预台账验收通过数据,且两者巡检标识为是的数据 -->
+		WHERE i.del_flag=0 and e.polling_flag=1 and ((i.assets_status=1 and i.status in(1,2,3)) or (i.assets_status=2 and e.verfy_status=2))
+		<if test="tenantId != null">
+			and i.sys_id = #{tenantId}
+		</if>
+		<if test="deptIds != null">
+			and i.dept_id in 
+		     <foreach item="item" index="index" collection="deptIds" open="(" separator="," close=")">  
+		      ${item} 
+		     </foreach>
+		</if>
+		order by i.dept_id asc,i.assets_status asc,i.assets_num desc
+	</select>
+	
+	<!-- 分页拉取本机构所有未加入保养计划的资产 -->
+	<select id="getMtAssetsPage" resultType="com.aek.ebey.assets.model.MtAssets">
+		SELECT 
+			 i.id id,
+			 i.assets_name  assetsName, 
+			 i.assets_num  assetsNum,
+			 i.assets_spec  assetsSpec,
+		     i.dept_id deptId,
+		     e.purchase_date purchaseDate,
+		     e.serial_num serialNum,
+		     e.factory_num factoryNum 
+		FROM ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- 保养计划资产范围为资产台账在库、在用、预登、待报损的且未加入过保养计划中的设备 -->
+		WHERE i.del_flag=0 and e.mt_plan_flag=0 and (i.assets_status=1 and i.status in(1,2,3,4)) 
+		<if test="user.tenantId != null">
+			and i.sys_id = #{user.tenantId}
+		</if>
+		<if test="query.keyword != null and query.keyword !=''">
+			and (i.assets_name  LIKE CONCAT('%',#{query.keyword},'%') or i.assets_num LIKE CONCAT('%',#{query.keyword},'%'))
+		</if>
+		<if test="query.deptId != null">
+			and i.dept_id = #{query.deptId}
+		</if>
+		order by i.assets_num desc
+	</select>
+	
+	<!-- PM设备列表查询 -->
+	<select id="getPmAssetsList" resultType="com.aek.ebey.assets.model.AssetsPm">
+		SELECT 
+			 i.id id,
+			 i.assets_name  name, 
+			 i.assets_num  no,
+			 i.assets_spec  model,
+		     i.dept_id departmentId,
+		     i.status equipmentStatusType,
+		     e.factory_num serialNo,
+		     e.purchase_date buyDate
+		FROM ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- PM实施中资产范围为资产台账在库、在用、预登状态数据 -->
+		WHERE i.del_flag=0 and i.assets_status=1 and i.status in(1,2,3) and e.pm_plan_flag=0
+		<if test="tenantId != null">
+			and i.sys_id = #{tenantId}
+		</if>
+		<if test="departmentId != null">
+			and i.dept_id = #{departmentId}
+		</if>
+		<if test="keyword != null and keyword != '' ">
+			and (i.assets_name  LIKE CONCAT('%',#{keyword},'%') or i.assets_num LIKE CONCAT('%',#{keyword},'%'))
+		</if>
+		order by i.dept_id asc,i.assets_status asc,i.assets_num desc
+	</select>	
+	
+	<!-- PM设备列表分页查询 -->
+	<select id="getPmAssetsPage" resultType="com.aek.ebey.assets.model.AssetsPm">
+		SELECT 
+			 i.id id,
+			 i.assets_name  name, 
+			 i.assets_num  no,
+			 i.assets_spec  model,
+		     i.dept_id departmentId,
+		     i.status equipmentStatusType,
+		     e.factory_num serialNo,
+		     e.purchase_date buyDate
+		FROM ass_assets_info i LEFT JOIN ass_assets_info_ext e on i.id=e.assets_id
+		<!-- 巡检实施中资产范围为资产台账在库、在用、预登状态数据-->
+		WHERE i.del_flag=0 and i.assets_status=1 and i.status in(1,2,3) and e.pm_plan_flag=0
+		<if test="tenantId != null">
+			and i.sys_id = #{tenantId}
+		</if>
+		<if test="departmentId != null">
+			and i.dept_id = #{departmentId}
+		</if>
+		<if test="keyword != null and keyword != '' ">
+			and (i.assets_name  LIKE CONCAT('%',#{keyword},'%') or i.assets_num LIKE CONCAT('%',#{keyword},'%'))
+		</if>
+		order by i.dept_id asc,i.assets_status asc,i.assets_num desc
+	</select>
+		
+	 <update id="updateAfterSelect" parameterType="com.aek.ebey.assets.model.AssetsInfo">
+		update ass_assets_info
+		<set>
+			sys_id = #{sysId},
+			area_id = #{areaId},
+			assets_name = #{assetsName},
+			assets_num = #{assetsNum},
+			repair_id = #{repairId},
+			parent_id = #{parentId},
+			spec_id = #{specId},
+			assets_spec = #{assetsSpec},
+			class_id = #{classId},
+			goods_id = #{goodsId},
+			use_by = #{useBy},
+			status = #{status},
+			assets_status = #{assetsStatus},
+			repair_status = #{repairStatus},
+			price = #{price},
+			spl_id = #{splId},
+			spl_name = #{splName},
+			assets_type_id = #{assetsTypeId},
+			assets_class_id = #{assetsClassId},
+			unit_id = #{unitId},
+			wh_id = #{whId},
+			dept_id = #{deptId},
+			fund_sources_id = #{fundSourcesId},
+			apply_dept_id = #{applyDeptId},
+			manage_dept_id = #{manageDeptId},
+			putin_date =#{putinDate},
+			scrap_date =#{scrapDate},
+			acceptance_date = #{acceptanceDate},
+			create_by = #{createBy},
+			create_time = #{createTime},
+			update_by = #{updateBy},
+			update_time =#{updateTime},
+			del_flag = #{delFlag},
+			three_level_code = #{threeLevelCode},
+			assets_img = #{assetsImg}
+		</set>
+		where id = #{id}
+	</update>
+	<update id="updateBatchByIds" parameterType="java.util.List">
+		update ass_assets_info   set     
+            status=4  
+        where id in     
+        <foreach collection="ids" index="index" item="item"  separator="," open="(" close=")">
+        	#{item}
+   	 	</foreach>
+ 	</update>
+ 	
+ 	<select id="getStatus" resultType="int">
+ 		SELECT status FROM ass_assets_info WHERE id=#{id}
+ 	</select>
+ 	
+ 	<select id="statsAssetOverview" resultType="com.aek.ebey.assets.model.vo.AssetsStatsVo">
+ 		SELECT 
+			i.sys_id as tenantId,
+			sum(case when i.status in(1,2,3,4) and i.create_time &lt; #{endTime} then 1 else 0 end) as assetsTotalNum,
+			sum(case when i.status in(1,2,3,4) and i.create_time &lt; #{endTime} then IFNULL(i.price,0) else 0 end) as assetsTotalCapital,
+			sum(case when YEAR(i.create_time)=YEAR(NOW()) and i.status in (1,2,3,4,5) and i.create_time &lt; #{endTime} then 1 else 0 end) as assetsTotalNewNumYear,
+			sum(case when YEAR(i.create_time)=YEAR(NOW()) and i.status in (1,2,3,4,5) and i.create_time &lt; #{endTime} then IFNULL(price,0) else 0 end) as assetsTotalNewCapitalYear,
+			sum(case when i.status=5 and YEAR(dc.create_time)=YEAR(NOW()) and dc.create_time &lt; #{endTime} then 1 else 0 end) as assetsTotalDiscardNumYear,
+			sum(case when i.status=5 and YEAR(dc.create_time)=YEAR(NOW()) and dc.create_time &lt; #{endTime} then IFNULL(price,0) else 0 end) as assetsTotalDiscardCapitalYear,
+			sum(case when i.repair_status=2 and i.status in (1,2,3,4) then 1 else 0 end) as assetsRepairAssetsNum,
+			sum(case when i.repair_status=1 and i.status in (1,2,3,4) then 1 else 0 end) as assetsUnrepairAssetsNum
+		FROM ass_assets_info i
+		LEFT JOIN ass_assets_discard_detail d on i.id = d.assets_id and d.verify_status=2
+		LEFT JOIN ass_assets_discard dc on d.discard_id = dc.id and dc.status=2
+		WHERE i.del_flag = 0 
+		AND i.assets_status = 1
+		group by sys_id
+ 	</select>
+ 	
+ 	<select id="statsDistributionCapitalRange" resultType="int">
+ 		SELECT 
+			(CASE WHEN tmp.assetsTotalNum is null THEN 0 ELSE tmp.assetsTotalNum END)
+		FROM 
+		(
+	 		SELECT
+	 		<!-- 将price为null的资产划归sort=1的区间统计 -->
+	 		<if test="sort == 1 and minCapital != null and maxCapital !=null">
+				SUM(case when ((price &gt;=#{minCapital} and price &lt;#{maxCapital}) OR price is null) then 1 else 0 end) as assetsTotalNum
+			</if>
+	 		<if test="sort != 1 and minCapital != null and maxCapital !=null">
+				SUM(case when (price &gt;=#{minCapital} and price &lt;#{maxCapital}) then 1 else 0 end) as assetsTotalNum
+			</if>
+			<if test="sort != 1 and minCapital != null and maxCapital ==null">
+				SUM(case when price &gt;=#{minCapital} then 1 else 0 end) as assetsTotalNum
+			</if>
+			FROM ass_assets_info  
+			WHERE del_flag = 0
+			AND assets_status = 1
+			AND status in (1,2,3,4)
+			AND create_time &lt; #{endTime} 
+			AND sys_id=#{tenantId}
+		) tmp
+ 	</select>
+ 	
+	<select id="statsAssetsStats2" resultType="com.aek.ebey.assets.model.vo.AssetsStats2Vo">
+		select 
+			sys_id as tenantId,
+			now() countTime,
+			date_format(now(),'%Y-%m') as countMonth,
+			sum(case when status in(1,2,3,4) then 1 else 0 end ) as assetsTotalNum,
+			sum(case when status in(1,2,3,4) then IFNULL(price,0) else 0 end ) as assetsTotalCapital
+		from ass_assets_info where del_flag = 0
+		AND assets_status = 1
+		AND create_time &lt; #{endTime}
+		group by sys_id
+	</select>
+	
+	<!-- 根据扫码内容获取资产信息 -->
+	<select id="getAssetsInfoByScanResult" resultType="com.aek.ebey.assets.model.vo.AssetsScanVO">
+		select
+			i.id,
+			i.assets_name assetsName,
+            i.assets_num  assetsNum,
+            i.assets_status assetsStatus,
+            i.repair_status repairStatus 
+		from ass_assets_info i
+		left join ass_assets_info_ext e on i.id = e.assets_id
+		where i.del_flag=0 and i.sys_id=#{tenantId} and (i.id=#{scanResult} or e.serial_num=#{scanResult}) limit 1;
+	</select>
+	
+	<select id="getMdAssets" resultType="com.aek.ebey.assets.model.vo.MdAssetsVO">
+		SELECT
+			i.id assetsId,
+			i.assets_name assetsName,
+			i.assets_num assetsNum,
+			i.assets_spec assetsSpec,
+			i.dept_id deptId,
+			e.factory_num factoryNum,
+			e.factory_name factoryName
+		FROM
+			ass_assets_info i
+		LEFT JOIN ass_assets_info_ext e ON i.id = e.assets_id
+		WHERE
+			i.del_flag = 0
+		AND i.`status` IN (1, 2, 3, 4)
+		AND i.assets_status = 1
+		AND i.sys_id = #{tenantId}
+		<if test="assetsName != null and assetsName != '' ">
+			and i.assets_name  LIKE CONCAT('%',#{assetsName},'%')
+		</if>
+		limit 0,20
+	</select>
+	
+	<!-- 通过SQL查询数据 -->
+	<select id="selectListSql" parameterType="String" resultType="java.util.Map">
+		<![CDATA[
+			${sql}
+		]]>
+	</select>
+</mapper>

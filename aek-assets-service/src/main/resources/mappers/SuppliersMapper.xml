@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.SuppliersMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.Suppliers">
+		<id column="id" property="id" />
+		<result column="area_id" property="areaId" />
+		<result column="sys_id" property="sysId" />
+		<result column="org_type" property="orgType" />
+		<result column="spl_type" property="splType" />
+		<result column="spl_guid" property="splGuid" />
+		<result column="spl_no" property="splNo" />
+		<result column="spl_name" property="splName" />
+		<result column="spl_name_py" property="splNamePy" />
+		<result column="spl_name_wb" property="splNameWb" />
+		<result column="spl_alias" property="splAlias" />
+		<result column="spl_tax_no" property="splTaxNo" />
+		<result column="spl_legal_person" property="splLegalPerson" />
+		<result column="spl_bank_name" property="splBankName" />
+		<result column="spl_bank_no" property="splBankNo" />
+		<result column="spl_pay_type" property="splPayType" />
+		<result column="spl_tel" property="splTel" />
+		<result column="spl_postcode" property="splPostcode" />
+		<result column="spl_fax" property="splFax" />
+		<result column="spl_email" property="splEmail" />
+		<result column="spl_addr_province" property="splAddrProvince" />
+		<result column="spl_addr_city" property="splAddrCity" />
+		<result column="spl_addr_country" property="splAddrCountry" />
+		<result column="spl_addr_detail" property="splAddrDetail" />
+		<result column="spl_office_addr" property="splOfficeAddr" />
+		<result column="spl_url" property="splUrl" />
+		<result column="spl_desc" property="splDesc" />
+		<result column="spl_logo_image_id" property="splLogoImageId" />
+		<result column="pay_type" property="payType" />
+		<result column="voucher_code" property="voucherCode" />
+		<result column="file_location" property="fileLocation" />
+		<result column="conts_name_idcode" property="contsNameIdcode" />
+		<result column="conts_name" property="contsName" />
+		<result column="conts_phone" property="contsPhone" />
+		<result column="conts_qq" property="contsQq" />
+		<result column="conts_email" property="contsEmail" />
+		<result column="tax_rate" property="taxRate" />
+		<result column="type_id" property="typeId" />
+		<result column="type_name" property="typeName" />
+		<result column="exceltemplate_id" property="exceltemplateId" />
+		<result column="approve_by" property="approveBy" />
+		<result column="approve_time" property="approveTime" />
+		<result column="approve_status" property="approveStatus" />
+		<result column="review_by" property="reviewBy" />
+		<result column="review_time" property="reviewTime" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="source_flag" property="sourceFlag" />
+		<result column="reg_flag" property="regFlag" />
+		<result column="sync_flag" property="syncFlag" />
+		<result column="valid_flag" property="validFlag" />
+		<result column="del_flag" property="delFlag" />
+		<result column="flie_list" property="flieList" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, area_id AS areaId, sys_id AS sysId, org_type AS orgType, spl_type AS splType, spl_guid AS splGuid, spl_no AS splNo, spl_name AS splName, spl_name_py AS splNamePy, spl_name_wb AS splNameWb, spl_alias AS splAlias, spl_tax_no AS splTaxNo, spl_legal_person AS splLegalPerson, spl_bank_name AS splBankName, spl_bank_no AS splBankNo, spl_pay_type AS splPayType, spl_tel AS splTel, spl_postcode AS splPostcode, spl_fax AS splFax, spl_email AS splEmail, spl_addr_province AS splAddrProvince, spl_addr_city AS splAddrCity, spl_addr_country AS splAddrCountry, spl_addr_detail AS splAddrDetail, spl_office_addr AS splOfficeAddr, spl_url AS splUrl, spl_desc AS splDesc, spl_logo_image_id AS splLogoImageId, pay_type AS payType, voucher_code AS voucherCode, file_location AS fileLocation, conts_name_idcode AS contsNameIdcode, conts_name AS contsName, conts_phone AS contsPhone, conts_qq AS contsQq, conts_email AS contsEmail, tax_rate AS taxRate, type_id AS typeId, type_name AS typeName, exceltemplate_id AS exceltemplateId, approve_by AS approveBy, approve_time AS approveTime, approve_status AS approveStatus, review_by AS reviewBy, review_time AS reviewTime, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, source_flag AS sourceFlag, reg_flag AS regFlag, sync_flag AS syncFlag, valid_flag AS validFlag, del_flag AS delFlag, flie_list AS flieList
+    </sql>
+</mapper>

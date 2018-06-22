@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssAssetsCertificateMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssAssetsCertificate">
+		<id column="id" property="id" />
+		<result column="certificate_num" property="certificateNum" />
+		<result column="certificate_register_num" property="certificateRegisterNum" />
+		<result column="certificate_type" property="certificateType" />
+		<result column="name" property="name" />
+		<result column="assets_id" property="assetsId" />
+		<result column="valid_date" property="validDate" />
+		<result column="valid_date_str" property="validDateStr" />
+		<result column="product_date" property="productDate" />
+		<result column="image_url" property="imageUrl" />
+		<result column="sys_id" property="sysId" />
+		<result column="del_flag" property="delFlag" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, certificate_num AS certificateNum,certificate_register_num AS certificateRegisterNum certificate_type AS certificateType, name, assets_id AS assetsId, valid_date AS validDate,valid_date_str AS validDateStr, product_date AS productDate, image_url AS imageUrl, sys_id AS sysId, del_flag AS delFlag
+    </sql>
+    
+    <select id="getCertificate" resultMap="BaseResultMap">
+    	SELECT
+			*
+		FROM
+			ass_assets_certificate
+		WHERE
+			assets_id = #{assetsId}
+		AND sys_id = #{user.tenantId}
+		AND del_flag = 0
+    </select>
+    
+    <select id="getCertificateByType" resultMap="BaseResultMap">
+    	SELECT
+			*
+		FROM
+			ass_assets_certificate
+		WHERE
+			assets_id = #{assetsId}
+		AND sys_id = #{user.tenantId}
+		AND certificate_type = #{certificateType}
+		AND del_flag = 0
+    </select>
+    
+    <select id="getCertificateByName" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			ass_assets_certificate
+		WHERE
+			name = #{name}
+		AND assets_id = #{assetsId}
+		AND sys_id = #{user.tenantId}
+		AND certificate_type = 5
+		AND del_flag = 0		
+    </select>
+    
+    <select id="getCertificateByNameId" resultMap="BaseResultMap">
+		SELECT
+			*
+		FROM
+			ass_assets_certificate
+		WHERE
+			name = #{name}
+		AND assets_id = #{assetsId}
+		AND id = #{idFlag}
+		AND sys_id = #{user.tenantId}
+		AND certificate_type = 5
+		AND del_flag = 0		
+    </select>
+    
+    
+    <delete id="del">	
+		DELETE FROM ass_assets_certificate WHERE sys_id=#{user.tenantId} AND assets_id=#{assetsId}
+    </delete>
+    
+</mapper>

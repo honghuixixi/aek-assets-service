@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.GoodsSpecsSupplyMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.GoodsSpecsSupply">
+		<id column="id" property="id" />
+		<result column="reg_id" property="regId" />
+		<result column="goods_id" property="goodsId" />
+		<result column="spec_no" property="specNo" />
+		<result column="spec_id" property="specId" />
+		<result column="area_id" property="areaId" />
+		<result column="sys_id" property="sysId" />
+		<result column="spl_id" property="splId" />
+		<result column="spl_name" property="splName" />
+		<result column="price" property="price" />
+		<result column="taxing_point" property="taxingPoint" />
+		<result column="defaul_flag" property="defaulFlag" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, reg_id AS regId, goods_id AS goodsId, spec_no AS specNo, spec_id AS specId, area_id AS areaId, sys_id AS sysId, spl_id AS splId, spl_name AS splName, price, taxing_point AS taxingPoint, defaul_flag AS defaulFlag, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag
+    </sql>
+</mapper>

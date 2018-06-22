@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.GoodsRegMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.GoodsReg">
+		<id column="id" property="id" />
+		<result column="area_id" property="areaId" />
+		<result column="sys_id" property="sysId" />
+		<result column="reg_guid" property="regGuid" />
+		<result column="reg_no" property="regNo" />
+		<result column="reg_type" property="regType" />
+		<result column="reg_name_en" property="regNameEn" />
+		<result column="reg_standard_no" property="regStandardNo" />
+		<result column="reg_goods_name" property="regGoodsName" />
+		<result column="reg_date" property="regDate" />
+		<result column="reg_expired_date" property="regExpiredDate" />
+		<result column="reg_defer_flag" property="regDeferFlag" />
+		<result column="reg_defer_no" property="regDeferNo" />
+		<result column="reg_defer_to_date" property="regDeferToDate" />
+		<result column="goods_standard" property="goodsStandard" />
+		<result column="goods_assembly" property="goodsAssembly" />
+		<result column="goods_scope" property="goodsScope" />
+		<result column="reg_agent" property="regAgent" />
+		<result column="service_deptment" property="serviceDeptment" />
+		<result column="approve_deptment" property="approveDeptment" />
+		<result column="remarks" property="remarks" />
+		<result column="source_flag" property="sourceFlag" />
+		<result column="old_reg_guid" property="oldRegGuid" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+		<result column="goods_specs" property="goodsSpecs" />
+		<result column="import_flag" property="importFlag" />
+		<result column="reg_edit_date" property="regEditDate" />
+		<result column="reg_goods_name_en" property="regGoodsNameEn" />
+		<result column="factory_country" property="factoryCountry" />
+		<result column="factory_id" property="factoryId" />
+		<result column="factory_name_en" property="factoryNameEn" />
+		<result column="factory_addr" property="factoryAddr" />
+		<result column="factory_name" property="factoryName" />
+		<result column="factory_place" property="factoryPlace" />
+		<result column="factory_postcode" property="factoryPostcode" />
+		<result column="service_hotline" property="serviceHotline" />
+		<result column="legal_factory_name" property="legalFactoryName" />
+		<result column="reg_addr" property="regAddr" />
+		<result column="goods_taboo" property="goodsTaboo" />
+		<result column="service_addr" property="serviceAddr" />
+		<result column="file_list" property="fileList" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, area_id AS areaId, sys_id AS sysId, reg_guid AS regGuid, reg_no AS regNo, reg_type AS regType, reg_name_en AS regNameEn, reg_standard_no AS regStandardNo, reg_goods_name AS regGoodsName, reg_date AS regDate, reg_expired_date AS regExpiredDate, reg_defer_flag AS regDeferFlag, reg_defer_no AS regDeferNo, reg_defer_to_date AS regDeferToDate, goods_standard AS goodsStandard, goods_assembly AS goodsAssembly, goods_scope AS goodsScope, reg_agent AS regAgent, service_deptment AS serviceDeptment, approve_deptment AS approveDeptment, remarks, source_flag AS sourceFlag, old_reg_guid AS oldRegGuid, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag, goods_specs AS goodsSpecs, import_flag AS importFlag, reg_edit_date AS regEditDate, reg_goods_name_en AS regGoodsNameEn, factory_country AS factoryCountry, factory_id AS factoryId, factory_name_en AS factoryNameEn, factory_addr AS factoryAddr, factory_name AS factoryName, factory_place AS factoryPlace, factory_postcode AS factoryPostcode, service_hotline AS serviceHotline, legal_factory_name AS legalFactoryName, reg_addr AS regAddr, goods_taboo AS goodsTaboo, service_addr AS serviceAddr, file_list AS fileList
+    </sql>
+</mapper>

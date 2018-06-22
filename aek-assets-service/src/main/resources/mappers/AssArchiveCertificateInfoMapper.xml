@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.AssArchiveCertificateInfoMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.AssArchiveCertificateInfo">
+		<id column="id" property="id" />
+		<result column="archive_id" property="archiveId" />
+		<result column="assets_id" property="assetsId" />
+		<result column="certificate_num" property="certificateNum" />
+		<result column="certificate_register_num" property="certificateRegisterNum" />
+		<result column="certificate_type" property="certificateType" />
+		<result column="name" property="name" />
+		<result column="valid_date" property="validDate" />
+		<result column="expire_time" property="expireTime" />
+		<result column="product_date" property="productDate" />
+		<result column="image_url" property="imageUrl" />
+		<result column="del_flag" property="delFlag" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, archive_id AS archiveId, assets_id AS assetsId, certificate_num AS certificateNum, certificate_register_num AS certificateRegisterNum, certificate_type AS certificateType, name, valid_date AS validDate, expire_time AS expireTime, product_date AS productDate, image_url AS imageUrl, del_flag AS delFlag, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime
+    </sql>
+    
+    <update id="updateCertificate">
+    	UPDATE 
+    		ass_archive_certificate_info
+		SET 
+			certificate_num = #{c.certificateNum},
+ 			certificate_register_num = #{c.certificateRegisterNum},
+ 			name = #{c.name}, 
+			certificate_type = #{c.certificateType},
+ 			valid_date = #{c.validDate},
+ 			expire_time = #{c.expireTime},
+ 			product_date = #{c.productDate},
+			image_url = #{c.imageUrl},
+			update_by = #{c.updateBy},
+			update_time = #{c.updateTime}
+		WHERE
+			archive_id = #{c.archiveId}
+		AND assets_id = #{c.assetsId}
+		AND id = #{c.id}
+    </update>
+    
+    
+    
+</mapper>

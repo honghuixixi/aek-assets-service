@@ -1,0 +1,4 @@
+#台账历史数据polling_flag统一为:1=是
+UPDATE `ass_assets_info_ext` SET polling_flag=1;
+ALTER TABLE `ass_assets_info_ext` MODIFY COLUMN polling_flag tinyint(1) DEFAULT '1' COMMENT '巡检标识1启用0不启用';
+commit;

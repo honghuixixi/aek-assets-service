@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.assets.mapper.GoodsSpecsQualityMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.assets.model.GoodsSpecsQuality">
+		<id column="id" property="id" />
+		<result column="reg_id" property="regId" />
+		<result column="goods_id" property="goodsId" />
+		<result column="spec_id" property="specId" />
+		<result column="area_id" property="areaId" />
+		<result column="sys_id" property="sysId" />
+		<result column="force_flag" property="forceFlag" />
+		<result column="am_flag" property="amFlag" />
+		<result column="polling_flag" property="pollingFlag" />
+		<result column="pm_flag" property="pmFlag" />
+		<result column="measure_flag" property="measureFlag" />
+		<result column="quality_flag" property="qualityFlag" />
+		<result column="repair_flag" property="repairFlag" />
+		<result column="commodity_flag" property="commodityFlag" />
+		<result column="measure_type" property="measureType" />
+		<result column="surplus_value" property="surplusValue" />
+		<result column="depreciation_age" property="depreciationAge" />
+		<result column="depreciation_type" property="depreciationType" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="del_flag" property="delFlag" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, reg_id AS regId, goods_id AS goodsId, spec_id AS specId, area_id AS areaId, sys_id AS sysId, force_flag AS forceFlag, am_flag AS amFlag, polling_flag AS pollingFlag, pm_flag AS pmFlag, measure_flag AS measureFlag, quality_flag AS qualityFlag, repair_flag AS repairFlag, commodity_flag AS commodityFlag, measure_type AS measureType, surplus_value AS surplusValue, depreciation_age AS depreciationAge, depreciation_type AS depreciationType, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, del_flag AS delFlag
+    </sql>
+</mapper>
